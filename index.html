@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Dhruv Singhvi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#08090C;--ink2:#0E1018;--ink3:#161924;--ink4:#1E2233;
+  --fog:#9AA0B8;--fog2:#525870;--fog3:#363B50;
+  --cream:#EDE9E1;--cream2:#C8C3B8;
+  --amber:#C8863A;--amber2:#E0A855;--amber3:#F0C878;
+  --glow:rgba(200,134,58,.12);
+  --blue:rgba(100,140,220,.08);
+}
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--cream);font-family:'Inter',sans-serif;font-size:15px;line-height:1.7;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:20px 56px;transition:all .5s}
+nav.scrolled{background:rgba(8,9,12,.88);backdrop-filter:blur(16px);padding:14px 56px;border-bottom:1px solid rgba(255,255,255,.04)}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:400;color:var(--amber);text-decoration:none;letter-spacing:.06em;font-style:italic}
+.nav-links{display:flex;gap:28px;list-style:none}
+.nav-links a{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--fog2);text-decoration:none;transition:color .25s;position:relative}
+.nav-links a::after{content:'';position:absolute;bottom:-3px;left:0;right:0;height:1px;background:var(--amber);transform:scaleX(0);transition:transform .25s;transform-origin:left}
+.nav-links a:hover{color:var(--amber2)}.nav-links a:hover::after{transform:scaleX(1)}
+
+/* HERO */
+#hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:0 56px;overflow:hidden}
+canvas#stars{position:absolute;inset:0;pointer-events:none}
+.hero-scan{position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.03) 2px,rgba(0,0,0,.03) 4px);opacity:.6}
+
+/* Astronomy SVG graphic — full hero background */
+.hero-astro{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;opacity:0;animation:fadeIn 1.4s .2s forwards}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+.hero-inner{position:relative;z-index:2;max-width:1200px;margin:0 auto;width:100%;display:grid;grid-template-columns:1fr 420px;align-items:center;gap:60px;padding:100px 0 80px}
+.hero-left{display:flex;flex-direction:column;justify-content:center}
+.hero-kicker{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.25em;text-transform:uppercase;color:var(--amber);margin-bottom:20px;opacity:0;animation:up .8s .3s forwards;display:flex;align-items:center;gap:12px}
+.hero-kicker::before{content:'';width:28px;height:1px;background:var(--amber);opacity:.6}
+h1.hero-name{font-family:'Cormorant Garamond',serif;font-size:clamp(4.5rem,9vw,9rem);font-weight:300;line-height:.9;color:var(--cream);letter-spacing:-.02em;opacity:0;animation:up .9s .45s forwards}
+h1.hero-name .italic{font-style:italic;color:var(--amber2)}
+.hero-desc{max-width:460px;font-size:.92rem;color:var(--fog);font-weight:300;line-height:1.9;margin-top:44px;opacity:0;animation:up .9s .65s forwards}
+
+/* Profile image column */
+.hero-right{position:relative;display:flex;flex-direction:column;align-items:center;gap:0;opacity:0;animation:up .9s .55s forwards}
+.hero-photo-wrap{position:relative;width:320px;height:400px;flex-shrink:0}
+.hero-photo-wrap img,.hero-photo-placeholder{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;border-radius:2px}
+.hero-photo-placeholder{background:var(--ink3);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.52rem;color:var(--fog3);letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--fog3)}
+/* Edge-blur mask on all 4 sides */
+.hero-photo-wrap::after{content:'';position:absolute;inset:0;pointer-events:none;border-radius:2px;
+  background:
+    linear-gradient(to bottom, var(--ink) 0%, transparent 18%, transparent 82%, var(--ink) 100%),
+    linear-gradient(to right,  var(--ink) 0%, transparent 18%, transparent 82%, var(--ink) 100%);
+  background-blend-mode:normal;
+  /* Use mask instead for proper blending */
+}
+/* Proper 4-edge fade via mask */
+.hero-photo-wrap{-webkit-mask-image:
+  linear-gradient(to bottom, transparent 0%, black 16%, black 84%, transparent 100%),
+  linear-gradient(to right,  transparent 0%, black 16%, black 84%, transparent 100%);
+  -webkit-mask-composite:source-in;
+  mask-image:
+    linear-gradient(to bottom, transparent 0%, black 16%, black 84%, transparent 100%),
+    linear-gradient(to right,  transparent 0%, black 16%, black 84%, transparent 100%);
+  mask-composite:intersect;
+}
+/* Links below photo */
+.hero-photo-links{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:320px}
+.hero-photo-links a{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.16em;text-transform:uppercase;color:white;text-decoration:none;transition:color .2s;display:flex;align-items:center;gap:8px}
+.hero-photo-links a::before{content:'';width:20px;height:1px;background:currentColor;transition:width .2s}
+.hero-photo-links a:hover{color:var(--amber)}.hero-photo-links a:hover::before{width:36px}
+
+@keyframes up{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+
+/* HERO — MOBILE */
+@media(max-width:768px){
+  #hero{padding:0 24px;min-height:100svh}
+  .hero-inner{
+    grid-template-columns:1fr;
+    gap:32px;
+    padding:100px 0 80px;
+    text-align:center;
+  }
+  /* Photo column: below text */
+  .hero-right{order:1;gap:0;position:relative}
+  .hero-photo-wrap{width:260px;height:320px;margin:0 auto}
+  /* Links overlap the bottom of the photo via negative margin */
+  .hero-photo-links{
+    margin-top:-48px;
+    align-items:center;
+    z-index:3;
+    position:relative;
+    flex-direction:row;
+    gap:20px;
+    white-space:nowrap;
+  }
+  /* Kicker line: center */
+  .hero-kicker{justify-content:center}
+  .hero-kicker::before{display:none}
+  /* Description: full width, centered, whiter */
+  .hero-desc{max-width:100%;margin-top:24px;color:var(--cream2)}
+  /* Hero name: pure white for contrast */
+  h1.hero-name{color:#ffffff}
+}
+
+/* SHARED SECTION CHROME */
+section{padding:112px 56px;position:relative}
+.si{max-width:1100px;margin:0 auto}
+.eyebrow{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.24em;text-transform:uppercase;color:var(--amber);margin-bottom:56px;display:flex;align-items:center;gap:16px}
+.eyebrow::after{content:'';flex:1;height:1px;background:var(--fog3);opacity:.5}
+.sh{font-family:'Cormorant Garamond',serif;font-size:clamp(1.8rem,3.5vw,2.7rem);font-weight:300;color:var(--cream);line-height:1.1;margin-bottom:52px}
+.sh em{font-style:italic;color:var(--amber2)}
+
+/* ───── OLYMPIADS ───── */
+#olympiads{background:var(--ink)}
+.oly-layout{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(255,255,255,.05);margin-bottom:1px}
+.oly-cell{background:var(--ink);padding:40px 36px;position:relative;overflow:hidden;transition:background .3s;cursor:default}
+.oly-cell::before{content:'';position:absolute;inset:0;background:var(--glow);opacity:0;transition:opacity .4s}
+.oly-cell:hover{background:var(--ink3)}.oly-cell:hover::before{opacity:1}
+.oly-line{position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--amber),var(--amber3));transform:scaleX(0);transform-origin:left;transition:transform .45s}
+.oly-cell:hover .oly-line{transform:scaleX(1)}
+.oly-idx{font-family:'Cormorant Garamond',serif;font-size:3.5rem;font-weight:300;color:var(--fog3);line-height:1;position:absolute;right:28px;top:24px;font-style:italic;transition:color .3s}
+.oly-cell:hover .oly-idx{color:var(--fog2)}
+.oly-year{font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.16em;text-transform:uppercase;color:var(--amber);margin-bottom:10px}
+.oly-name{font-family:'Cormorant Garamond',serif;font-size:1.45rem;font-weight:400;color:var(--cream);line-height:1.2;margin-bottom:12px;padding-right:40px}
+.oly-stat{font-size:.83rem;color:var(--fog);font-weight:300;line-height:1.75}
+.oly-badge{display:inline-flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:.52rem;letter-spacing:.1em;text-transform:uppercase;color:var(--amber3);background:rgba(200,134,58,.08);border:1px solid rgba(200,134,58,.2);padding:4px 10px;margin-top:14px}
+.oly-badge::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--amber3)}
+/* IJHS — full-width accent row */
+.oly-full{background:var(--ink2);padding:32px 36px;display:flex;align-items:center;justify-content:space-between;gap:40px;border-top:1px solid rgba(255,255,255,.04)}
+.oly-full-left{flex:1}
+.oly-full-right{text-align:right;flex-shrink:0}
+.oly-full-num{font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:300;color:var(--amber);font-style:italic;line-height:1}
+.oly-full-lbl{font-family:'JetBrains Mono',monospace;font-size:.54rem;letter-spacing:.14em;text-transform:uppercase;color:var(--fog2);margin-top:4px}
+
+/* ───── PHOTO GRID (masonry columns) ───── */
+.photo-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+.pg-col{display:flex;flex-direction:column;gap:5px}
+.photo-cell{overflow:hidden;position:relative;cursor:pointer;transition:opacity .3s}
+.photo-cell:hover{opacity:.88}
+.photo-cell-inner{width:100%;overflow:hidden;display:block}
+.photo-cell-inner img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s}
+.photo-cell:hover .photo-cell-inner img{transform:scale(1.04)}
+@media(max-width:700px){.photo-grid{grid-template-columns:repeat(2,1fr)}}
+
+/* ───── EA ───── */
+#ea{background:var(--ink2)}
+/* EA uses a horizontal card layout instead of timeline for variety */
+.ea-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:rgba(255,255,255,.04)}
+.ea-card{background:var(--ink2);padding:36px 28px;position:relative;overflow:hidden;transition:background .3s;cursor:default}
+.ea-card:hover{background:var(--ink3)}
+.ea-card-accent{position:absolute;left:0;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--amber),transparent);opacity:0;transition:opacity .4s}
+.ea-card:hover .ea-card-accent{opacity:1}
+.ea-tag{font-family:'JetBrains Mono',monospace;font-size:.54rem;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);margin-bottom:6px}
+.ea-when{font-family:'JetBrains Mono',monospace;font-size:.52rem;letter-spacing:.1em;color:var(--fog3);margin-bottom:14px}
+.ea-role{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:400;color:var(--cream);line-height:1.2;margin-bottom:4px}
+.ea-org{font-size:.78rem;color:var(--amber);text-decoration:none;display:inline-block;margin-bottom:14px;transition:color .2s}.ea-org:hover{color:var(--amber3)}
+.ea-desc{font-size:.83rem;color:var(--fog);font-weight:300;line-height:1.8}
+
+/* ───── CAMPS ───── */
+#camps{background:var(--ink3);overflow:hidden}
+/* Horizontal scroll strip for variety */
+.camps-scroll-hint{font-family:'JetBrains Mono',monospace;font-size:.52rem;letter-spacing:.12em;text-transform:uppercase;color:var(--fog3);margin-bottom:20px}
+.camps-strip{display:grid;grid-template-columns:repeat(5,320px);gap:16px;overflow-x:auto;padding-bottom:12px;scrollbar-width:none;-ms-overflow-style:none}
+.camps-strip::-webkit-scrollbar{display:none}
+.camp-card{position:relative;overflow:hidden;background:var(--ink);border:1px solid var(--fog3);transition:border-color .3s;flex-shrink:0}
+.camp-card:hover{border-color:var(--amber)}
+.camp-photo{width:100%;aspect-ratio:4/3;background:var(--ink2);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+.camp-photo img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s}
+.camp-card:hover .camp-photo img{transform:scale(1.04)}
+.camp-photo-placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--fog3);font-family:'JetBrains Mono',monospace;font-size:.5rem;letter-spacing:.06em;writing-mode:vertical-rl;opacity:.4}
+.camp-body{padding:20px 18px}
+.camp-name{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:400;color:var(--cream);line-height:1.25;margin-bottom:6px}
+.camp-year{font-family:'JetBrains Mono',monospace;font-size:.52rem;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);margin-bottom:8px}
+.camp-desc{font-size:.76rem;color:var(--fog);font-weight:300;line-height:1.65}
+
+/* ───── SCORES ───── */
+#scores{background:var(--ink)}
+/* Scores: large asymmetric layout — SAT big, APs smaller */
+.scores-hero{display:flex;gap:2px;margin-bottom:2px}
+.score-main{flex:2;background:var(--ink2);padding:48px 40px;position:relative;overflow:hidden;transition:background .3s}
+.score-main:hover{background:var(--ink3)}
+.score-main::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--amber),transparent);transform:scaleX(0);transform-origin:left;transition:transform .4s}
+.score-main:hover::after{transform:scaleX(1)}
+.score-n-big{font-family:'Cormorant Garamond',serif;font-size:5.5rem;font-weight:300;color:var(--amber2);line-height:1;letter-spacing:-.02em}
+.score-n-big sup{font-size:1.5rem;vertical-align:top;margin-top:.8rem;display:inline-block;color:var(--fog2)}
+.score-label-big{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--cream2);margin-top:12px}
+.score-note-big{font-size:.8rem;color:var(--fog2);margin-top:6px;font-weight:300}
+.self-tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.48rem;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);background:rgba(200,134,58,.08);border:1px solid rgba(200,134,58,.18);padding:2px 7px;margin-top:10px}
+.scores-aps{flex:3;display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:rgba(255,255,255,.03)}
+.score-col{background:var(--ink2);padding:36px 28px;position:relative;overflow:hidden;transition:background .3s}
+.score-col::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--amber),transparent);transform:scaleX(0);transform-origin:left;transition:transform .4s}
+.score-col:hover{background:var(--ink3)}.score-col:hover::after{transform:scaleX(1)}
+.score-n{font-family:'Cormorant Garamond',serif;font-size:3rem;font-weight:300;color:var(--amber2);line-height:1}
+.score-label{font-family:'JetBrains Mono',monospace;font-size:.54rem;letter-spacing:.12em;text-transform:uppercase;color:var(--cream2);margin-top:10px}
+.score-note{font-size:.74rem;color:var(--fog2);margin-top:5px;font-weight:300}
+
+/* ───── SCHOOL ───── */
+#school{background:var(--ink2)}
+/* Mega school box */
+.school-mega{background:var(--ink);border:1px solid rgba(255,255,255,.07);overflow:hidden}
+.school-mega-header{background:var(--ink3);padding:28px 36px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:space-between;gap:20px}
+.school-mega-title{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:400;color:var(--cream);line-height:1.2}
+.school-mega-meta{font-family:'JetBrains Mono',monospace;font-size:.54rem;letter-spacing:.12em;text-transform:uppercase;color:var(--fog3)}
+.school-divider{height:1px;background:rgba(255,255,255,.05)}
+/* Scores row */
+.school-scores{display:flex;gap:0;border-bottom:1px solid rgba(255,255,255,.05)}
+.sc-block{flex:1;padding:30px 28px;border-right:1px solid rgba(255,255,255,.05);border-bottom:2px solid transparent;transition:border-color .3s,background .3s}
+.sc-block:last-child{border-right:none}
+.sc-block:hover{border-bottom-color:var(--amber);background:var(--ink2)}
+.sc-n{font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:300;color:var(--amber);line-height:1}
+.sc-lbl{font-family:'JetBrains Mono',monospace;font-size:.54rem;letter-spacing:.12em;text-transform:uppercase;color:var(--fog2);margin-top:8px}
+.sc-sub{font-size:.78rem;color:var(--fog);margin-top:5px;font-weight:300}
+/* Activities sub-section within mega box */
+.school-acts-header{padding:24px 36px 20px;background:var(--ink2);border-top:1px solid rgba(255,255,255,.05)}
+.school-sub-heading{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:300;color:var(--cream2);font-style:italic;border-left:2px solid var(--amber);padding-left:16px}
+.school-acts-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid rgba(255,255,255,.05)}
+/* TEDx side */
+.tedx-panel{padding:32px 36px;border-right:1px solid rgba(255,255,255,.05)}
+.tedx-thumb{display:block;width:100%;aspect-ratio:16/9;background:var(--ink3);border:1px solid var(--fog3);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.5rem;color:var(--fog3);text-decoration:none;transition:border-color .3s;margin-bottom:16px;overflow:hidden}
+.tedx-thumb:hover{border-color:var(--amber)}
+.tedx-thumb img{width:100%;height:100%;object-fit:cover}
+.tedx-thumb-placeholder{display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-family:'JetBrains Mono',monospace;font-size:.5rem;color:var(--fog3);letter-spacing:.06em}
+.tedx-info .tag2{font-family:'JetBrains Mono',monospace;font-size:.54rem;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);margin-bottom:8px}
+.tedx-info h4{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:400;color:var(--cream);margin-bottom:8px;line-height:1.2}
+.tedx-info p{font-size:.82rem;color:var(--fog);font-weight:300;line-height:1.7}
+/* activities side — list style */
+.act-panel{padding:32px 36px}
+.act-list-item{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.04);align-items:flex-start}
+.act-list-item:last-child{border-bottom:none;padding-bottom:0}
+.act-dot{width:4px;height:4px;border-radius:50%;background:var(--amber);flex-shrink:0;margin-top:8px}
+.act-list-body{}
+.act-list-title{font-size:.86rem;color:var(--cream);font-weight:400;line-height:1.3;margin-bottom:3px}
+.act-list-desc{font-size:.76rem;color:var(--fog2);font-weight:300;line-height:1.6}
+
+/* ───── LIFE / INTERESTS ───── */
+#personal{background:var(--ink3)}
+.life-stack{display:flex;flex-direction:column;gap:64px}
+/* Photography — dense masonry-like strip */
+.photo-row-label{font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.2em;text-transform:uppercase;color:var(--fog2);margin-bottom:16px}
+.photo-strip{display:grid;grid-template-columns:repeat(8,1fr);gap:4px}
+.photo-cell{background:var(--ink);border:1px solid rgba(255,255,255,.04);overflow:hidden;position:relative;cursor:pointer;transition:border-color .3s}
+.photo-cell:hover{border-color:var(--amber)}
+.photo-cell.tall{grid-row:span 2}
+.photo-cell-inner{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+.photo-cell.tall .photo-cell-inner{aspect-ratio:1/2}
+.photo-cell-inner img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.photo-cell:hover .photo-cell-inner img{transform:scale(1.07)}
+.photo-placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.4rem;color:var(--fog3);letter-spacing:.06em}
+/* Books + Music side by side */
+.bm-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px}
+.track{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.track:last-child{border-bottom:none}
+.track-n{font-family:'JetBrains Mono',monospace;font-size:.54rem;color:var(--fog3);width:14px;flex-shrink:0;text-align:center}
+.track-cover{width:34px;height:34px;background:var(--ink2);flex-shrink:0;border:1px solid var(--fog3);display:flex;align-items:center;justify-content:center;font-size:.44rem;color:var(--fog3);font-family:'JetBrains Mono',monospace;overflow:hidden}
+.track-cover img{width:100%;height:100%;object-fit:cover}
+.track-info{flex:1;min-width:0}
+.track-title{font-size:.84rem;color:var(--cream);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.track-artist{font-size:.73rem;color:var(--fog2);font-weight:300}
+.playing-dot{width:5px;height:5px;border-radius:50%;background:var(--amber);flex-shrink:0;animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.8)}}
+.book-item{display:flex;gap:12px;margin-bottom:20px}
+.book-item:last-child{margin-bottom:0}
+.book-cover{width:38px;height:54px;background:var(--ink2);flex-shrink:0;border:1px solid var(--fog3);display:flex;align-items:center;justify-content:center;font-size:.42rem;color:var(--fog3);font-family:'JetBrains Mono',monospace;overflow:hidden}
+.book-cover img{width:100%;height:100%;object-fit:cover}
+.book-title{font-family:'Cormorant Garamond',serif;font-size:1rem;color:var(--cream);font-weight:400;line-height:1.2}
+.book-author{font-size:.7rem;color:var(--fog2);margin-bottom:5px;font-weight:300}
+.book-thought{font-size:.78rem;color:var(--fog);font-weight:300;line-height:1.65;font-style:italic}
+
+/* ───── CONTACT ───── */
+#contact{background:var(--ink);text-align:center;padding:130px 56px;overflow:hidden;position:relative}
+.contact-bg-text{position:absolute;font-family:'Cormorant Garamond',serif;font-size:clamp(8rem,18vw,16rem);font-weight:300;color:rgba(255,255,255,.015);line-height:1;top:50%;left:50%;transform:translate(-50%,-50%);white-space:nowrap;pointer-events:none;font-style:italic;letter-spacing:-.02em}
+.contact-inner{position:relative;z-index:2}
+.contact-h{font-family:'Cormorant Garamond',serif;font-size:clamp(3rem,7vw,6rem);font-weight:300;color:var(--cream);line-height:1;margin-bottom:20px}
+.contact-h em{font-style:italic;color:var(--amber2)}
+.contact-sub{color:var(--fog);font-size:.88rem;max-width:380px;margin:0 auto 48px;font-weight:300;line-height:1.85}
+.contact-btns{display:flex;justify-content:center;gap:14px;flex-wrap:wrap}
+.cbtn{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--cream);text-decoration:none;border:1px solid var(--fog3);padding:13px 28px;transition:all .25s}
+.cbtn:hover{border-color:var(--amber);color:var(--amber)}
+.cbtn.fill{background:var(--amber);color:var(--ink);border-color:var(--amber)}
+.cbtn.fill:hover{background:var(--amber2);border-color:var(--amber2);color:var(--ink)}
+
+footer{background:var(--ink);border-top:1px solid rgba(255,255,255,.04);padding:24px 56px;display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.08em;color:var(--fog3)}
+
+/* REVEAL */
+.r{opacity:0;transform:translateY(26px);transition:opacity .75s ease,transform .75s ease}
+.r.delay1{transition-delay:.1s}.r.delay2{transition-delay:.2s}.r.delay3{transition-delay:.3s}
+.r.v{opacity:1;transform:none}
+
+/* PARALLAX SECTION DIVIDERS */
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--fog3) 30%,var(--fog3) 70%,transparent);opacity:.3}
+
+@media(max-width:1000px){
+  nav{padding:18px 24px}nav.scrolled{padding:12px 24px}
+  .nav-links{display:none}
+  section{padding:80px 24px}
+  #hero{padding:0 24px 64px}
+  .oly-layout{grid-template-columns:1fr}
+  .scores-hero{flex-direction:column}
+  .scores-aps{grid-template-columns:repeat(2,1fr)}
+  .ea-cards{grid-template-columns:1fr}
+  .school-scores{flex-direction:column}
+  .school-acts-grid,.bm-grid{grid-template-columns:1fr}
+  .tedx-panel{border-right:none;border-bottom:1px solid rgba(255,255,255,.05)}
+  .school-mega-header{flex-direction:column;align-items:flex-start;gap:8px}
+  .photo-strip{grid-template-columns:repeat(4,1fr)}
+  .hero-row{flex-direction:column;gap:24px}
+  .hero-nav{align-items:flex-start}
+  footer{flex-direction:column;gap:8px;text-align:center}
+  .camps-strip{grid-template-columns:repeat(5,260px)}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.r{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#hero" class="nav-logo">Dhruv Singhvi</a>
+  <ul class="nav-links">
+    <li><a href="#olympiads">Olympiads</a></li>
+    <li><a href="#ea">EA</a></li>
+    <li><a href="#camps">Camps</a></li>
+    <li><a href="#scores">Scores</a></li>
+    <li><a href="#school">School</a></li>
+    <li><a href="#personal">Life</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <canvas id="stars"></canvas>
+  <div class="hero-scan"></div>
+
+  <!-- Astronomy decorative SVG — full hero background -->
+  <svg class="hero-astro" viewBox="0 0 1400 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs>
+      <!-- Edge fade so it doesn't hard-clip -->
+      <radialGradient id="astroFade" cx="52%" cy="48%" r="60%">
+        <stop offset="0%" stop-color="white" stop-opacity="1"/>
+        <stop offset="75%" stop-color="white" stop-opacity=".7"/>
+        <stop offset="100%" stop-color="white" stop-opacity="0"/>
+      </radialGradient>
+      <mask id="astroMask"><rect width="1400" height="900" fill="url(#astroFade)"/></mask>
+
+      <filter id="amberGlow" x="-80%" y="-80%" width="260%" height="260%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur"/>
+        <feColorMatrix in="blur" type="matrix" values="1.2 .5 0 0 .05  .6 .3 0 0 0  0 0 0 0 0  0 0 0 1.2 0" result="colored"/>
+        <feMerge><feMergeNode in="colored"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <filter id="coreGlow" x="-120%" y="-120%" width="340%" height="340%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="22" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <filter id="starGlow" x="-150%" y="-150%" width="400%" height="400%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <filter id="planetGlow" x="-100%" y="-100%" width="300%" height="300%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+
+      <path id="annotArc1" d="M 360,450 a 290,290 0 1,1 .01,0"/>
+      <path id="annotArc2" d="M 520,450 a 140,140 0 1,1 .01,0"/>
+
+      <style>
+        .orbit-ring{fill:none;stroke:rgba(200,134,58,.38);stroke-width:1}
+        .orbit-ring-med{fill:none;stroke:rgba(200,134,58,.22);stroke-width:.8;stroke-dasharray:3 16}
+        .orbit-ring-faint{fill:none;stroke:rgba(200,134,58,.12);stroke-width:.6;stroke-dasharray:2 20}
+        .grid-line{stroke:rgba(200,134,58,.1);stroke-width:.6;fill:none}
+        .tick-major{stroke:rgba(200,134,58,.6);stroke-width:1;fill:none}
+        .tick-minor{stroke:rgba(200,134,58,.3);stroke-width:.7;fill:none}
+        .const-line{stroke:rgba(237,233,225,.25);stroke-width:.9;fill:none}
+        @keyframes rotSlow{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+        @keyframes rotMed{from{transform:rotate(0deg)}to{transform:rotate(-360deg)}}
+        @keyframes rotFast{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+        @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+        @keyframes twinkle{0%,100%{opacity:.9}50%{opacity:.35}}
+        .g-slow{transform-origin:650px 450px;animation:rotSlow 90s linear infinite}
+        .g-med{transform-origin:650px 450px;animation:rotMed 55s linear infinite}
+        .g-fast{transform-origin:650px 450px;animation:rotFast 30s linear infinite}
+        .t1{animation:twinkle 3.1s ease-in-out infinite}
+        .t2{animation:twinkle 2.4s ease-in-out .6s infinite}
+        .t3{animation:twinkle 4.2s ease-in-out 1.2s infinite}
+        .t4{animation:twinkle 2.8s ease-in-out 1.8s infinite}
+      </style>
+    </defs>
+
+    <g mask="url(#astroMask)">
+
+      <!-- ── Coordinate grid lines spanning full viewport ── -->
+      <line class="grid-line" x1="650" y1="0"    x2="650" y2="900"/>
+      <line class="grid-line" x1="0"   y1="450"  x2="1400" y2="450"/>
+      <line class="grid-line" x1="275" y1="75"   x2="1025" y2="825"/>
+      <line class="grid-line" x1="275" y1="825"  x2="1025" y2="75"/>
+      <!-- Extended diagonals -->
+      <line class="grid-line" x1="0"   y1="175"  x2="650"  y2="825" opacity=".5"/>
+      <line class="grid-line" x1="1400" y1="175" x2="650"  y2="825" opacity=".5"/>
+      <line class="grid-line" x1="0"   y1="725"  x2="650"  y2="75"  opacity=".5"/>
+      <line class="grid-line" x1="1400" y1="725" x2="650"  y2="75"  opacity=".5"/>
+
+      <!-- ── Orbit rings centred at 650,450 ── -->
+      <!-- Outermost — almost edge-to-edge -->
+      <circle class="orbit-ring-faint" cx="650" cy="450" r="410"/>
+      <circle class="orbit-ring-faint" cx="650" cy="450" r="360" stroke-dasharray="4 18"/>
+
+      <!-- Mid rings -->
+      <circle class="orbit-ring-med"  cx="650" cy="450" r="290"/>
+      <circle class="orbit-ring-med"  cx="650" cy="450" r="220" stroke-dasharray="5 12"/>
+
+      <!-- Inner solid rings -->
+      <circle class="orbit-ring" cx="650" cy="450" r="155"/>
+      <circle class="orbit-ring" cx="650" cy="450" r="95"  stroke-dasharray="3 10" stroke="rgba(200,134,58,.5)"/>
+
+      <!-- ── Tick marks on 155r ring — every 30° ── -->
+      <g stroke="rgba(200,134,58,.55)" stroke-width="1.2" fill="none">
+        <!-- 0° top -->  <line x1="650" y1="293" x2="650" y2="276"/>
+        <!-- 30° -->      <line x1="727.5" y1="317.5" x2="736.6" y2="301.9"/>
+        <!-- 60° -->      <line x1="784.4" y1="393" x2="797.8" y2="385.5"/>
+        <!-- 90° right --> <line x1="805" y1="450" x2="822" y2="450"/>
+        <!-- 120° -->     <line x1="784.4" y1="507" x2="797.8" y2="514.5"/>
+        <!-- 150° -->     <line x1="727.5" y1="582.5" x2="736.6" y2="598.1"/>
+        <!-- 180° -->     <line x1="650" y1="607" x2="650" y2="624"/>
+        <!-- 210° -->     <line x1="572.5" y1="582.5" x2="563.4" y2="598.1"/>
+        <!-- 240° -->     <line x1="515.6" y1="507" x2="502.2" y2="514.5"/>
+        <!-- 270° left --> <line x1="495" y1="450" x2="478" y2="450"/>
+        <!-- 300° -->     <line x1="515.6" y1="393" x2="502.2" y2="385.5"/>
+        <!-- 330° -->     <line x1="572.5" y1="317.5" x2="563.4" y2="301.9"/>
+      </g>
+      <!-- Minor ticks every 10° on 155r — just a sample subset -->
+      <g class="tick-minor">
+        <line x1="650" y1="295" x2="650" y2="285" transform="rotate(10 650 450)"/>
+        <line x1="650" y1="295" x2="650" y2="285" transform="rotate(20 650 450)"/>
+        <line x1="650" y1="295" x2="650" y2="285" transform="rotate(40 650 450)"/>
+        <line x1="650" y1="295" x2="650" y2="285" transform="rotate(50 650 450)"/>
+        <line x1="650" y1="295" x2="650" y2="285" transform="rotate(70 650 450)"/>
+        <line x1="650" y1="295" x2="650" y2="285" transform="rotate(80 650 450)"/>
+        <line x1="650" y1="295" x2="650" y2="285" transform="rotate(100 650 450)"/>
+        <line x1="650" y1="295" x2="650" y2="285" transform="rotate(110 650 450)"/>
+        <line x1="650" y1="295" x2="650" y2="285" transform="rotate(130 650 450)"/>
+        <line x1="650" y1="295" x2="650" y2="285" transform="rotate(140 650 450)"/>
+        <line x1="650" y1="295" x2="650" y2="285" transform="rotate(160 650 450)"/>
+        <line x1="650" y1="295" x2="650" y2="285" transform="rotate(170 650 450)"/>
+        <line x1="650" y1="295" x2="650" y2="285" transform="rotate(190 650 450)"/>
+        <line x1="650" y1="295" x2="650" y2="285" transform="rotate(200 650 450)"/>
+        <line x1="650" y1="295" x2="650" y2="285" transform="rotate(220 650 450)"/>
+        <line x1="650" y1="295" x2="650" y2="285" transform="rotate(230 650 450)"/>
+        <line x1="650" y1="295" x2="650" y2="285" transform="rotate(250 650 450)"/>
+        <line x1="650" y1="295" x2="650" y2="285" transform="rotate(260 650 450)"/>
+        <line x1="650" y1="295" x2="650" y2="285" transform="rotate(280 650 450)"/>
+        <line x1="650" y1="295" x2="650" y2="285" transform="rotate(290 650 450)"/>
+        <line x1="650" y1="295" x2="650" y2="285" transform="rotate(310 650 450)"/>
+        <line x1="650" y1="295" x2="650" y2="285" transform="rotate(320 650 450)"/>
+        <line x1="650" y1="295" x2="650" y2="285" transform="rotate(340 650 450)"/>
+        <line x1="650" y1="295" x2="650" y2="285" transform="rotate(350 650 450)"/>
+      </g>
+
+      <!-- ── Degree label arc ── -->
+      <text font-family="'JetBrains Mono',monospace" font-size="8.5" fill="rgba(200,134,58,.5)" letter-spacing="1.8">
+        <textPath href="#annotArc1" startOffset="2%">0° · · · · · 30° · · · · · 60° · · · · · 90° · · · · · 120° · · · · · 150° · · · · · 180° · · · · · 210° · · · · · 240° · · · · · 270° · · · · · 300° · · · · · 330°</textPath>
+      </text>
+      <text font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(200,134,58,.35)" letter-spacing="1.4">
+        <textPath href="#annotArc2" startOffset="3%">RA 05h · · Dec +20° · · RA 06h · · Dec +40° · · RA 07h · · Dec +60° · · RA 08h · · Dec +80°</textPath>
+      </text>
+
+      <!-- ── Slow outer planet (290r ring) ── -->
+      <g class="g-slow">
+        <!-- Planet at top of 290r -->
+        <g transform="translate(650,160)">
+          <circle r="16" fill="rgba(200,100,38,.0)" filter="url(#planetGlow)"/>
+          <circle r="14" fill="#D4924A" filter="url(#amberGlow)"/>
+          <!-- Rings -->
+          <ellipse rx="28" ry="7" fill="none" stroke="rgba(220,160,80,.7)" stroke-width="1.5" transform="rotate(-18)"/>
+          <ellipse rx="35" ry="9" fill="none" stroke="rgba(220,160,80,.35)" stroke-width="1" transform="rotate(-18)"/>
+        </g>
+        <!-- Small companion moon on 360r ring, offset 140° -->
+        <g transform="translate(650,450) rotate(140) translate(0,-360)">
+          <circle r="5.5" fill="rgba(237,233,225,.75)" filter="url(#starGlow)"/>
+        </g>
+        <!-- Faint dot on 410r, offset 200° -->
+        <g transform="translate(650,450) rotate(200) translate(0,-410)">
+          <circle r="3.5" fill="rgba(200,134,58,.55)"/>
+        </g>
+      </g>
+
+      <!-- ── Med orbit: blue-ish smaller planet on 220r ── -->
+      <g class="g-med">
+        <g transform="translate(650,450) rotate(70) translate(0,-220)">
+          <circle r="9" fill="rgba(180,200,240,.15)" filter="url(#planetGlow)"/>
+          <circle r="8" fill="rgba(160,185,230,.8)" filter="url(#starGlow)"/>
+        </g>
+        <!-- counterpart dot -->
+        <g transform="translate(650,450) rotate(250) translate(0,-220)">
+          <circle r="4" fill="rgba(200,134,58,.6)"/>
+        </g>
+      </g>
+
+      <!-- ── Fast innermost dot on 95r ── -->
+      <g class="g-fast">
+        <circle cx="650" cy="355" r="4.5" fill="rgba(240,200,120,.9)" filter="url(#starGlow)"/>
+      </g>
+
+      <!-- ── Central star ── -->
+      <!-- Outer corona layers -->
+      <circle cx="650" cy="450" r="80" fill="rgba(200,100,40,.07)" filter="url(#coreGlow)"/>
+      <circle cx="650" cy="450" r="55" fill="rgba(200,120,50,.12)" filter="url(#coreGlow)"/>
+      <circle cx="650" cy="450" r="34" fill="rgba(210,140,60,.25)"/>
+      <!-- Core -->
+      <circle cx="650" cy="450" r="26" fill="#C8863A" filter="url(#amberGlow)"/>
+      <circle cx="650" cy="450" r="14" fill="#F0C878"/>
+      <!-- Diffraction spikes — long -->
+      <g stroke="rgba(240,200,100,.7)" stroke-width="1.2" filter="url(#starGlow)">
+        <line x1="650" y1="405" x2="650" y2="345"/>
+        <line x1="650" y1="495" x2="650" y2="555"/>
+        <line x1="605" y1="450" x2="545" y2="450"/>
+        <line x1="695" y1="450" x2="755" y2="450"/>
+      </g>
+      <!-- Diagonal spikes — shorter -->
+      <g stroke="rgba(240,200,100,.35)" stroke-width=".8">
+        <line x1="631" y1="431" x2="604" y2="404"/>
+        <line x1="669" y1="469" x2="696" y2="496"/>
+        <line x1="669" y1="431" x2="696" y2="404"/>
+        <line x1="631" y1="469" x2="604" y2="496"/>
+      </g>
+
+      <!-- ── Bright constellation — upper right (Orion-like) ── -->
+      <g class="t1" filter="url(#starGlow)">
+        <circle cx="1050" cy="130" r="3.5" fill="rgba(200,210,255,.95)"/>
+      </g>
+      <g class="t2">
+        <circle cx="1095" cy="165" r="2.5" fill="rgba(200,210,255,.85)" filter="url(#starGlow)"/>
+      </g>
+      <g class="t3">
+        <circle cx="1140" cy="148" r="4.2" fill="rgba(220,225,255,.95)" filter="url(#starGlow)"/>
+      </g>
+      <g class="t1">
+        <circle cx="1185" cy="115" r="2.8" fill="rgba(200,210,255,.8)"/>
+      </g>
+      <g class="t4">
+        <circle cx="1065" cy="210" r="2.2" fill="rgba(237,233,225,.7)" filter="url(#starGlow)"/>
+      </g>
+      <g class="t2">
+        <circle cx="1110" cy="225" r="3.0" fill="rgba(237,233,225,.85)" filter="url(#starGlow)"/>
+      </g>
+      <g class="t3">
+        <circle cx="1155" cy="215" r="2.4" fill="rgba(237,233,225,.75)"/>
+      </g>
+      <g class="t1">
+        <circle cx="1075" cy="268" r="2.8" fill="rgba(200,210,255,.8)" filter="url(#starGlow)"/>
+      </g>
+      <g class="t4">
+        <circle cx="1130" cy="280" r="2.0" fill="rgba(237,233,225,.65)"/>
+      </g>
+      <g class="t2">
+        <circle cx="1160" cy="270" r="3.5" fill="rgba(220,200,170,.9)" filter="url(#starGlow)"/>
+      </g>
+      <!-- Constellation lines -->
+      <g class="const-line">
+        <line x1="1050" y1="130" x2="1140" y2="148"/>
+        <line x1="1140" y1="148" x2="1185" y2="115"/>
+        <line x1="1095" y1="165" x2="1110" y2="225"/>
+        <line x1="1110" y1="225" x2="1160" y2="270"/>
+        <line x1="1075" y1="268" x2="1160" y2="270"/>
+        <line x1="1065" y1="210" x2="1075" y2="268"/>
+        <line x1="1110" y1="225" x2="1130" y2="280"/>
+      </g>
+      <!-- Label -->
+      <text x="1175" y="108" font-family="'JetBrains Mono',monospace" font-size="8" fill="rgba(200,210,255,.6)" letter-spacing="1.5">ORION</text>
+
+      <!-- ── Second constellation — lower left ── -->
+      <g class="t3" filter="url(#starGlow)">
+        <circle cx="148" cy="660" r="3.8" fill="rgba(255,220,180,.9)"/>
+      </g>
+      <g class="t1">
+        <circle cx="195" cy="620" r="2.4" fill="rgba(237,233,225,.7)"/>
+      </g>
+      <g class="t2" filter="url(#starGlow)">
+        <circle cx="230" cy="650" r="3.0" fill="rgba(200,210,255,.85)"/>
+      </g>
+      <g class="t4">
+        <circle cx="180" cy="700" r="2.2" fill="rgba(237,233,225,.65)"/>
+      </g>
+      <g class="t1" filter="url(#starGlow)">
+        <circle cx="240" cy="710" r="2.8" fill="rgba(220,200,170,.8)"/>
+      </g>
+      <g class="const-line">
+        <line x1="148" y1="660" x2="230" y2="650"/>
+        <line x1="195" y1="620" x2="180" y2="700"/>
+        <line x1="230" y1="650" x2="240" y2="710"/>
+        <line x1="180" y1="700" x2="240" y2="710"/>
+      </g>
+
+      <!-- ── Wide scattered field stars — across full hero ── -->
+      <g fill="rgba(237,233,225,.55)">
+        <circle cx="80"  cy="120" r="1.5" class="t2"/>
+        <circle cx="195" cy="80"  r="1.8" class="t1"/>
+        <circle cx="350" cy="55"  r="1.2"/>
+        <circle cx="470" cy="95"  r="1.6" class="t3"/>
+        <circle cx="820" cy="60"  r="2.0" class="t4"/>
+        <circle cx="950" cy="45"  r="1.3" class="t2"/>
+        <circle cx="1250" cy="200" r="1.8" class="t1"/>
+        <circle cx="1320" cy="350" r="1.4" class="t3"/>
+        <circle cx="1350" cy="520" r="1.6" class="t2"/>
+        <circle cx="1300" cy="680" r="1.2"/>
+        <circle cx="1200" cy="800" r="1.9" class="t4"/>
+        <circle cx="1000" cy="840" r="1.3" class="t1"/>
+        <circle cx="750"  cy="860" r="1.5" class="t3"/>
+        <circle cx="500"  cy="830" r="1.7" class="t2"/>
+        <circle cx="310"  cy="810" r="1.2"/>
+        <circle cx="120"  cy="780" r="1.6" class="t4"/>
+        <circle cx="55"   cy="580" r="1.4" class="t1"/>
+        <circle cx="40"   cy="350" r="1.8" class="t3"/>
+        <circle cx="100"  cy="220" r="1.3" class="t2"/>
+        <!-- Denser mid-field -->
+        <circle cx="860"  cy="170" r="1.1" class="t4"/>
+        <circle cx="910"  cy="750" r="1.4" class="t2"/>
+        <circle cx="390"  cy="700" r="1.2" class="t1"/>
+        <circle cx="280"  cy="350" r="1.5" class="t3"/>
+        <circle cx="1180" cy="450" r="1.3" class="t4"/>
+      </g>
+
+      <!-- ── Annotation label for main star ── -->
+      <g opacity=".65">
+        <line x1="676" y1="426" x2="730" y2="380" stroke="rgba(200,134,58,.45)" stroke-width=".8"/>
+        <text x="735" y="376" font-family="'JetBrains Mono',monospace" font-size="9" fill="rgba(200,134,58,.75)" letter-spacing="1.6">SOL · G2V</text>
+        <line x1="735" y1="378" x2="870" y2="378" stroke="rgba(200,134,58,.3)" stroke-width=".6"/>
+      </g>
+
+      <!-- ── Parallax cross-hair at a secondary point ── -->
+      <g stroke="rgba(200,134,58,.4)" stroke-width=".8" fill="none">
+        <circle cx="1100" cy="520" r="14"/>
+        <line x1="1100" y1="500" x2="1100" y2="492"/>
+        <line x1="1100" y1="540" x2="1100" y2="548"/>
+        <line x1="1080" y1="520" x2="1072" y2="520"/>
+        <line x1="1120" y1="520" x2="1128" y2="520"/>
+      </g>
+      <circle cx="1100" cy="520" r="3.5" fill="rgba(200,134,58,.7)" filter="url(#starGlow)"/>
+      <text x="1117" y="513" font-family="'JetBrains Mono',monospace" font-size="7.5" fill="rgba(200,134,58,.55)" letter-spacing="1.2">HD 189733</text>
+
+      <!-- ── Second crosshair, lower left area ── -->
+      <g stroke="rgba(200,134,58,.3)" stroke-width=".7" fill="none">
+        <circle cx="310" cy="580" r="10"/>
+        <line x1="310" y1="566" x2="310" y2="560"/>
+        <line x1="310" y1="594" x2="310" y2="600"/>
+        <line x1="296" y1="580" x2="290" y2="580"/>
+        <line x1="324" y1="580" x2="330" y2="580"/>
+      </g>
+      <circle cx="310" cy="580" r="2.5" fill="rgba(200,134,58,.55)"/>
+
+    </g>
+  </svg>
+
+  <div class="hero-inner">
+
+    <!-- LEFT: text content -->
+    <div class="hero-left">
+      <p class="hero-kicker">Mumbai · India</p>
+      <h1 class="hero-name">Dhruv<br/><span class="italic">Singhvi</span></h1>
+      <p class="hero-desc">Hi! I'm Dhruv, and I'm someone who loves the thrill of chasing olympiad problems at 2 AM and trying to make sense of the universe. When I'm not doing any of those, I'm probably geeking out about aviation & railways, and how much I love good public transit!
+        I'm currently pursuing my A-Levels in Physics, Chemistry, Maths, and Further Maths.</p>
+    </div>
+
+    <!-- RIGHT: profile photo + links -->
+    <div class="hero-right">
+      <div class="hero-photo-wrap">
+        <!-- Replace src with your actual photo path, e.g. src="profile.jpg" -->
+        <div class="hero-photo-placeholder"><img src="IMG_20260602_002234_664.webp" alt=""></div>
+      </div>
+      <nav class="hero-photo-links" aria-label="Quick links">
+        <a href="https://www.linkedin.com/in/dhruv-singhvi/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="mailto:dhruvsinghvi09@gmail.com">Email</a>
+      </nav>
+    </div>
+
+  </div>
+</section>
+
+<!-- OLYMPIADS -->
+<section id="olympiads">
+  <div class="si">
+    <p class="eyebrow r">Science Olympiads</p>
+
+    <div class="oly-layout r">
+
+      <div class="oly-cell">
+        <div class="oly-line"></div>
+        <span class="oly-idx">01</span>
+        <p class="oly-year">IOAA / INPhO · 2026</p>
+        <h3 class="oly-name">Astronomy & Astrophysics OCSC</h3>
+        <p class="oly-stat">Selected among top 50 of 19,284 (0.26%) for the IOAA Orientation-cum-Selection Camp (for Team India @IOAA) in HBCSE. <strong style="color:var(--cream)">Ranked 7th nationally.</strong><br/><br/>Simultaneously selected for the equivalent IPhO (Physics) OCSC - top 40 of 66,515 (0.06%).</p>
+        <span class="oly-badge">Rank 7 · IOAA OCSC</span>
+      </div>
+
+      <div class="oly-cell">
+        <div class="oly-line"></div>
+        <span class="oly-idx">02</span>
+        <p class="oly-year">HUSO India · 2025</p>
+        <h3 class="oly-name">Harvard Undergraduate Science Olympiad India</h3>
+        <p class="oly-stat">Selected amongst top 50 nationally to attend camp at GD Goenka University, run by Harvard–MIT students. <strong style="color:var(--cream)">Overall Rank 1.</strong> Secured Gold in Physics, Chemistry, Biology & Maths; Silver in Earth Science. Awarded $200 scholarship + 100% scholarship to HMCSF Summer Camp@Harvard.</p>
+        <span class="oly-badge">Rank 1</span>
+      </div>
+
+      <div class="oly-cell">
+        <div class="oly-line"></div>
+        <span class="oly-idx">03</span>
+        <p class="oly-year">IJSO · 2024</p>
+        <h3 class="oly-name">Junior Science OCSC</h3>
+        <p class="oly-stat">Selected in 36 of 32,629 (0.11%) through rigorous theoretical testing in Physics, Chemistry & Biology. Attending National OCSC (for Team India @IJSO) at the Indian Institute of Science's Talent Development Centre</p>
+        <span class="oly-badge">Top 0.11% · IISc camp</span>
+      </div>
+
+      <div class="oly-cell">
+        <div class="oly-line"></div>
+        <span class="oly-idx">04</span>
+        <p class="oly-year">International Junior Honors Society · 2022–Present</p>
+        <h3 class="oly-name">IJHS Lifetime Membership</h3>
+        <p class="oly-stat">Awarded Lifetime Membership by the Singapore International Maths Contests Centre (SIMCC) for three consecutive years of excellent performance across a suite of STEM Olympiads.</p>
+        <span class="oly-badge">Lifetime Member</span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CAMPS -->
+<section id="camps">
+  <div class="si">
+    <p class="eyebrow r">Camps & Programmes</p>
+    <h2 class="sh r">Camps I've <em>enjoyed.</em></h2>
+    <p class="camps-scroll-hint r">← scroll →</p>
+    <div class="camps-strip r">
+
+      <div class="camp-card">
+        <div class="camp-photo"><img src="astro ocsc.jpg" alt=""></div>
+        <div class="camp-body">
+          <p class="camp-year">IOAA OCSC · April 2026</p>
+          <h4 class="camp-name">Astronomy Camp at HBCSE</h4>
+          <p class="camp-desc">Enjoyed advanced lectures by professors from IITs, IUCAA, and TIFR-HBCE, faced extremely challenging examinations in Theory & Data Analysis, gained hands-on experience with telescope handling, and made amazing friends from across India.</p>
+        </div>
+      </div>
+
+      <div class="camp-card">
+        <div class="camp-photo"><img src="ijso ocsc.jpg" alt=""></div>
+        <div class="camp-body">
+          <p class="camp-year">IJSO OCSC · May 2024</p>
+          <h4 class="camp-name">Junior Science Camp at TDC</h4>
+          <p class="camp-desc">Exposed to advanced theoretical lectures by professors & performed scientific labwork in research-grade laboratories. Got to interact with the best & brightest students pan-India & write intense theory and practical exams. 
+            </p>
+        </div>
+      </div>
+
+      <div class="camp-card">
+        <div class="camp-photo"><img src="goethe.jpg" alt=""></div>
+        <div class="camp-body">
+          <p class="camp-year">Goethe Institut · Sep 2024</p>
+          <h4 class="camp-name">Regional Youth Camp in Sri Lanka</h4>
+          <p class="camp-desc">A cultural camp in Sri Lanka for South Asian German learners - won first place at the camp challenge, writing & performing a play in German with students from India, Pakistan, Nepal, Sri Lanka, and Bangladesh.
+          </p>
+        </div>
+      </div>
+
+      <div class="camp-card">
+        <div class="camp-photo"><img src="huso india.jpg" alt=""></div>
+        <div class="camp-body">
+          <p class="camp-year">HUSO India · Jan 2025</p>
+          <h4 class="camp-name">HUSO India National Camp</h4>
+          <p class="camp-desc">Enjoyed a Science Camp at GD Goenka University run by past-olympiad medallists / national campers in their countries. Participated in hands-on activities and theory exams with olympiad-grade questions. Ranked 1st.</p>
+        </div>
+      </div>
+
+      <div class="camp-card">
+        <div class="camp-photo"><img src="hmcsf.jpg" alt=""></div>
+        <div class="camp-body">
+          <p class="camp-year">Harvard Model Congress · Jul 2025</p>
+          <h4 class="camp-name">HMCSF Summer Camp</h4>
+          <p class="camp-desc">A fully-funded week @Harvard University with students from around the world, led by students/recent graduates from Harvard. Enjoyed working on AI-themed group projects & exploring the Harvard and MIT campuses.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- EA -->
+<section id="ea">
+  <div class="si">
+    <p class="eyebrow r">Effective Altruism</p>
+    <h2 class="sh r">Thinking rigorously<br/>about <em>what matters.</em></h2>
+    <p class="r" style="font-size:.9rem;color:var(--fog);font-weight:300;line-height:1.85;max-width:640px;margin-bottom:48px">
+      The EA community's all about trying to figure out the best way to do the most good, and I've found it to be one of the most intellectually stimulating spaces I've come across.</p>
+    <div class="ea-cards r">
+
+      <div class="ea-card">
+        <div class="ea-card-accent"></div>
+        <p class="ea-tag">PARA</p>
+        <p class="ea-when">Jun 2026 – Present</p>
+        <h3 class="ea-role">Peer Assistant Research Advisor</h3>
+        <a href="https://www.non-trivial.org/" class="ea-org" target="_blank" rel="noopener">Non-Trivial ↗</a>
+        <p class="ea-desc">Selected among fellowship alumni to mentor the 2026 cohort: giving feedback on research proposals, assisting full-time facilitators, and answering questions from the other side of the process.</p>
+      </div>
+
+      <div class="ea-card">
+        <div class="ea-card-accent"></div>
+        <p class="ea-tag">Research Fellow</p>
+        <p class="ea-when">Mar – Jul 2025</p>
+        <h3 class="ea-role">Non-Trivial Fellowship</h3>
+        <a href="https://www.non-trivial.org/" class="ea-org" target="_blank" rel="noopener">Non-Trivial ↗</a>
+        <p class="ea-desc">Chosen from 150 of 600 finalists (7,000+ applicants) on proposal and interview. Wrote a research report on high-impact solutions to urban design, public transit, and air pollution in Mumbai. Engaged with like-minded peers from around the world </p>
+      </div>
+
+      <div class="ea-card">
+        <div class="ea-card-accent"></div>
+        <p class="ea-tag">Finalist</p>
+        <p class="ea-when">Jan – Feb 2026</p>
+        <h3 class="ea-role">Mathematics of Morality</h3>
+        <a href="https://leaf.courses/" class="ea-org" target="_blank" rel="noopener">Leaf Courses ↗</a>
+        <p class="ea-desc">Selected early for Leaf's winter cohort - exploring the mathematics of effective altruism (Bayesian probability, welfare functions, moral uncertainty, etc.) alongside an international peer group.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- SCORES -->
+<section id="scores">
+  <div class="si">
+    <p class="eyebrow r">Standardised Tests</p>
+    <h2 class="sh r">All self-studied.<br/><em>All top scores.</em></h2>
+    <div class="scores-hero r">
+      <!-- SAT — big -->
+      <div class="score-main">
+        <div class="score-n-big">1580<sup> /1600</sup></div>
+        <p class="score-label-big">Digital SAT</p>
+        <p class="score-note-big">Math 800 · EBRW 780</p>
+        <span class="self-tag">Self studied</span>
+      </div>
+      <!-- APs — 3-col grid -->
+      <div class="scores-aps">
+        <div class="score-col">
+          <div class="score-n">5</div>
+          <p class="score-label">AP Calculus BC</p>
+          <p class="score-note">AB Subscore: 5</p>
+          <span class="self-tag">Self studied</span>
+        </div>
+        <div class="score-col">
+          <div class="score-n">5</div>
+          <p class="score-label">AP Physics C</p>
+          <p class="score-note">Mechanics</p>
+          <span class="self-tag">Self studied</span>
+        </div>
+        <div class="score-col">
+          <div class="score-n">5</div>
+          <p class="score-label">AP CS Principles</p>
+          <p class="score-note">Computer Science</p>
+          <span class="self-tag">Self studied</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCHOOL -->
+<section id="school">
+  <div class="si">
+    <p class="eyebrow r">School</p>
+
+    <!-- Mega box -->
+    <div class="school-mega r">
+
+      <!-- Header -->
+      <div class="school-mega-header">
+        <div>
+          <div class="school-mega-title">NES International School Mumbai</div>
+          <div class="school-mega-meta" style="margin-top:6px">IB MYP &amp; A Levels · 2019–2027</div>
+        </div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:1rem;font-style:italic;color:var(--fog2)">Mumbai, India</div>
+      </div>
+
+      <!-- Academic scores row -->
+      <div class="school-scores">
+        <!-- A in A-Levels -->
+        <div class="sc-block">
+          <div class="sc-n" style="color:var(--amber2)">A</div>
+          <p class="sc-lbl">AS Level Exams</p>
+          <p style="font-family:'JetBrains Mono',monospace;font-size:.52rem;letter-spacing:.08em;text-transform:uppercase;color:var(--amber3);margin-top:4px;margin-bottom:8px">Grade A in all three</p>
+          <p class="sc-sub" style="margin-top:4px">Physics<br/>Chemistry<br/>Mathematics</p>
+        </div>
+
+        <!-- 42/42 and 41/42 unified -->
+        <div class="sc-block" style="flex:2">
+          <div style="display:flex;gap:32px;align-items:flex-start;flex-wrap:wrap">
+            <div>
+              <div class="sc-n">42<span style="font-size:1.2rem;color:var(--fog2)">/42</span></div>
+              <p class="sc-lbl" style="margin-top:8px">IB MYP Term 1</p>
+            </div>
+            <div style="margin-top:4px;padding-top:4px">
+              <div class="sc-n" style="font-size:1.8rem">41<span style="font-size:1rem;color:var(--fog2)">/42</span></div>
+              <p class="sc-lbl" style="margin-top:8px">IB MYP Term 2</p>
+            </div>
+          </div>
+          <p class="sc-sub" style="margin-top:10px;font-size:.76rem;line-height:1.7">Language &amp; Literature, Mathematics, Sciences, Individuals &amp; Societies, German, Design</p>
+        </div>
+
+        <!-- Current coursework -->
+        <div class="sc-block">
+          <p class="sc-lbl" style="margin-bottom:10px">Current Coursework</p>
+          <p style="font-family:'JetBrains Mono',monospace;font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);margin-bottom:6px">A Level</p>
+          <p style="font-size:.83rem;color:var(--cream);font-weight:400;line-height:1.85">Physics<br/>Chemistry<br/>Mathematics<br/>Further Mathematics</p>
+          <p style="font-family:'JetBrains Mono',monospace;font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;color:var(--fog2);margin-top:10px;margin-bottom:4px">AS Level</p>
+          <p style="font-size:.8rem;color:var(--fog);font-weight:300">English Language</p>
+        </div>
+      </div>
+
+      <div class="school-acts-header" style="padding-top:0;padding-bottom:0;min-height:0;border-top:none"></div>
+
+      <div class="school-acts-grid">
+
+        <!-- TEDx left panel -->
+        <div class="tedx-panel">
+          <a href="https://www.youtube.com/watch?v=baIPzr7rP1Y" class="tedx-thumb" target="_blank" rel="noopener">
+            <div class="tedx-thumb-placeholder"><img src="IMG_0998.jpeg"" alt=""></div>
+          </a>
+          <div class="tedx-info">
+            <p class="tag2">TEDxNESIntlSchool · Sep 2023 · Click on Thumbnail to Watch</p>
+            <h4>Connections in the New Era</h4>
+            <p>On the largely untapped positive potential of online communities, and why & how to harness it. Selected on merit for critical thinking and oratory skills. Also co-organised the event in '23 and '24.</p>
+          </div>
+        </div>
+
+        <!-- Activities right panel — list style -->
+        <div class="act-panel">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:.54rem;letter-spacing:.14em;text-transform:uppercase;color:var(--fog2);margin-bottom:4px">Other activities</p>
+
+          <div class="act-list-item">
+            <div class="act-dot"></div>
+            <div class="act-list-body">
+              <p class="act-list-title">Founder &amp; President: Computer Science Club</p>
+              <p class="act-list-desc">Founded and led the school's CS club; organising regular workshops.</p>
+            </div>
+          </div>
+
+          <div class="act-list-item">
+            <div class="act-dot"></div>
+            <div class="act-list-body">
+              <p class="act-list-title">School Prefect · 2024-Present</p>
+              <p class="act-list-desc">Elected to be part of the student leadership body.</p>
+            </div>
+          </div>
+
+          <div class="act-list-item">
+            <div class="act-dot"></div>
+            <div class="act-list-body">
+              <p class="act-list-title">MUN - Best Delegate &amp; Member of Secretariat</p>
+              <p class="act-list-desc">Best Delegate at NES Senior MUN 2024; served on the Secretariat & Chaired UNGA at NES Junior MUN 2024.</p>
+            </div>
+          </div>
+
+          <div class="act-list-item">
+            <div class="act-dot"></div>
+            <div class="act-list-body">
+              <p class="act-list-title">Tabla &amp; Anchoring</p>
+              <p class="act-list-desc">Trained tabla player, certified as Praveshika by Akhal Bharitya Gandharva Mahavidyala with a First Division Score. Multiple Solo Performances.</p>
+            </div>
+          </div>
+
+          <div class="act-list-item">
+            <div class="act-dot"></div>
+            <div class="act-list-body">
+              <p class="act-list-title">Reporter &amp; Editor - School Newspaper, Primary Anchor</p>
+              <p class="act-list-desc">Wrote and edited articles for the school paper across multiple years, served as primary anchor for school events throughout MYP.</p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div><!-- end mega box -->
+
+  </div>
+</section>
+
+<!-- PERSONAL -->
+<section id="personal">
+  <div class="si">
+    <p class="eyebrow r">Life</p>
+    <h2 class="sh r"><em>Amateur</em> Photography, Music & Reading<br/></h2>
+    <div class="life-stack">
+
+      <!-- Photography — responsive masonry grid with real images -->
+      <div class="r photography-section">
+        <p class="photo-row-label">Shot on Nothing Phone(2a)</p>
+        <div class="photo-grid">
+
+          <div class="pg-col">
+            <div class="photo-cell"><div class="photo-cell-inner"><img src="img01.jpg" alt=""></div></div>
+            <div class="photo-cell"><div class="photo-cell-inner"><img src="img02.jpg" alt=""></div></div>
+          </div>
+
+          <div class="pg-col">
+            <div class="photo-cell"><div class="photo-cell-inner"><img src="img04.jpg" alt=""></div></div>
+            <div class="photo-cell"><div class="photo-cell-inner"><img src="img03.jpg" alt=""></div></div>
+          </div>
+
+          <div class="pg-col">
+            <div class="photo-cell"><div class="photo-cell-inner"><img src="img07.jpg" alt=""></div></div>
+            <div class="photo-cell"><div class="photo-cell-inner"><img src="img09.jpg" alt=""></div></div>
+          </div>
+
+          <div class="pg-col">
+            <div class="photo-cell"><div class="photo-cell-inner"><img src="img11.jpg" alt=""></div></div>
+            <div class="photo-cell"><div class="photo-cell-inner"><img src="img12.jpg" alt=""></div></div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Books + Music side by side -->
+      <div class="bm-grid r">
+
+        <!-- Music -->
+        <div>
+          <p class="photo-row-label">NOW PLAYING</p>
+          <div>
+            <div class="track"><span class="track-n">1</span><div class="track-info"><p class="track-title">Iris</p><p class="track-artist">Goo Goo Dolls</p></div><div class="playing-dot"></div></div>
+            <div class="track"><span class="track-n">2</span><div class="track-info"><p class="track-title">I'll Believe in Anything</p><p class="track-artist">Wolf Parade</p></div></div>
+            <div class="track"><span class="track-n">3</span><div class="track-info"><p class="track-title">Celestial</p><p class="track-artist">Ed Sheeran</p></div></div>
+            <div class="track"><span class="track-n">4</span><div class="track-info"><p class="track-title">Charlie Brown</p><p class="track-artist">Coldplay</p></div></div>
+          </div>
+        </div>
+
+        <!-- Books -->
+        <div>
+          <p class="photo-row-label">Recent Reads</p>
+          <div>
+            <div class="book-item">
+              <div>
+                <p class="book-title">The Song of Achilles</p>
+                <p class="book-author">Madeline Miller</p>
+                <p class="book-thought">A retelling of the Iliad exploring the relationship between Achilles & Patroclus that felt. The intimate nature of the beautiful prose was captivating, and the tragedy left me broken in all the good ways.</p>
+              </div>
+            </div>
+            <div class="book-item">
+              <div>
+                <p class="book-title">Life of Pi</p>
+                <p class="book-author">Yann Martel</p>
+                <p class="book-thought">Extremely Vivid Prose transported me to late-1900s Pondicherry and then to the middle of the ocean, and mic-drop moment & reveal at the end was the best I've ever experienced, left me genuinely thinking about faith & religion.
+                  </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-bg-text">Hello.</div>
+  <div class="contact-inner">
+    <h2 class="contact-h r">Say <em>hello.</em></h2>
+    <p class="contact-sub r">Whether it's about physics, EA, a collaboration, or just a good conversation.</p>
+    <div class="contact-btns r">
+      <a href="mailto:dhruvsinghvi09@gmail.com" class="cbtn fill">Send an email</a>
+      <a href="https://www.linkedin.com/in/dhruv-singhvi/" target="_blank" rel="noopener" class="cbtn">LinkedIn</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>Dhruv Singhvi · Mumbai</span>
+  <span id="yr"></span>
+</footer>
+
+<script>
+/* STARFIELD */
+(()=>{
+  const c=document.getElementById('stars'),x=c.getContext('2d');
+  let S=[],W,H;
+  function resize(){
+    W=c.width=c.offsetWidth;H=c.height=c.offsetHeight;
+    S=[];const n=Math.min(Math.floor(W*H/1400),700);
+    for(let i=0;i<n;i++){
+      const bright=Math.random()<.04;
+      S.push({x:Math.random()*W,y:Math.random()*H,
+        r:bright?(Math.random()*.8+.5):(Math.random()*.5+.1),
+        a:bright?(Math.random()*.7+.25):(Math.random()*.35+.05),
+        sp:Math.random()*.005+.001,ph:Math.random()*Math.PI*2,bright})
+    }
+  }
+  let t=0;
+  function draw(){
+    x.clearRect(0,0,W,H);t+=.012;
+    const g=x.createRadialGradient(W*.45,H*.35,0,W*.45,H*.35,W*.5);
+    g.addColorStop(0,'rgba(200,134,58,.035)');g.addColorStop(.6,'rgba(120,80,30,.012)');g.addColorStop(1,'rgba(0,0,0,0)');
+    x.fillStyle=g;x.fillRect(0,0,W,H);
+    S.forEach(s=>{
+      const a=s.a*(0.4+0.6*Math.sin(t*s.sp*55+s.ph));
+      if(s.bright){
+        x.save();x.globalAlpha=a*.5;x.strokeStyle='rgba(237,233,225,.8)';x.lineWidth=.5;
+        x.beginPath();x.moveTo(s.x-s.r*3,s.y);x.lineTo(s.x+s.r*3,s.y);x.stroke();
+        x.beginPath();x.moveTo(s.x,s.y-s.r*3);x.lineTo(s.x,s.y+s.r*3);x.stroke();
+        x.restore();
+      }
+      x.beginPath();x.arc(s.x,s.y,s.r,0,Math.PI*2);
+      x.fillStyle=`rgba(237,233,225,${a})`;x.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  new ResizeObserver(resize).observe(c.parentElement);
+  resize();draw();
+})();
+
+/* NAV */
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>60),{passive:true});
+
+/* REVEAL */
+document.querySelectorAll('.r').forEach(el=>{
+  new IntersectionObserver(([e])=>{if(e.isIntersecting){el.classList.add('v');}},{threshold:.08}).observe(el);
+});
+
+/* CAMPS HORIZONTAL DRAG-SCROLL */
+(()=>{
+  const s=document.querySelector('.camps-strip');
+  if(!s)return;
+  let isDown=false,startX,scrollLeft;
+  s.addEventListener('mousedown',e=>{isDown=true;startX=e.pageX-s.offsetLeft;scrollLeft=s.scrollLeft;s.style.cursor='grabbing'});
+  s.addEventListener('mouseleave',()=>{isDown=false;s.style.cursor=''});
+  s.addEventListener('mouseup',()=>{isDown=false;s.style.cursor=''});
+  s.addEventListener('mousemove',e=>{if(!isDown)return;e.preventDefault();const x=e.pageX-s.offsetLeft;s.scrollLeft=scrollLeft-(x-startX)*1.2});
+})();
+
+/* FOOTER */
+document.getElementById('yr').textContent='© '+new Date().getFullYear();
+</script>
+</body>
+</html>
