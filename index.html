@@ -1,1233 +1,416 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dhruv Singhvi</title>
-<link rel="icon" type="image/png" href="favicon.ico">
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<meta name="description" content="Dhruv Singhvi, Mumbai.">
+<link rel="icon" href="favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-img{max-width:100%}
 :root{
-  --ink:#08090C;--ink2:#0E1018;--ink3:#161924;--ink4:#1E2233;
-  --fog:#9AA0B8;--fog2:#525870;--fog3:#363B50;
-  --cream:#EDE9E1;--cream2:#C8C3B8;
-  --amber:#C8863A;--amber2:#E0A855;--amber3:#F0C878;
-  --glow:rgba(200,134,58,.12);
-  --blue:rgba(100,140,220,.08);
+  --bg:#111214; --ink:#ebe8e3; --muted:#9b9a97; --rule:#27282c; --soft:#1a1b1e;
+  --accent:#f2b646;   /* the one colour; change it to anything */
+  --sans:"IBM Plex Sans",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,monospace;
+  color-scheme:dark;
 }
-html{scroll-behavior:smooth}
-body{background:var(--ink);color:var(--cream);font-family:'Inter',sans-serif;font-size:15px;line-height:1.7;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font:400 17px/1.65 var(--sans)}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline;text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+img{display:block;max-width:100%}
+.mono{font-family:var(--mono);font-size:.8rem}
+.muted{color:var(--muted)}
+.todo{display:block;border:1px dashed var(--muted);color:var(--muted);padding:10px 12px;font:.8rem var(--mono);border-radius:4px}
+span.todo{display:inline-block;padding:0 6px}
+.links{display:flex;flex-wrap:wrap;gap:6px 18px}
+.links .discord{color:var(--muted);white-space:nowrap}
 
-/* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:20px 56px;transition:all .5s}
-nav.scrolled{background:rgba(8,9,12,.88);backdrop-filter:blur(16px);padding:14px 56px;border-bottom:1px solid rgba(255,255,255,.04)}
-.nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:400;color:var(--amber);text-decoration:none;letter-spacing:.06em;font-style:italic}
-.nav-links{display:flex;gap:28px;list-style:none}
-.nav-links a{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--fog2);text-decoration:none;transition:color .25s;position:relative}
-.nav-links a::after{content:'';position:absolute;bottom:-3px;left:0;right:0;height:1px;background:var(--amber);transform:scaleX(0);transition:transform .25s;transform-origin:left}
-.nav-links a:hover{color:var(--amber2)}.nav-links a:hover::after{transform:scaleX(1)}
+.bar{max-width:1440px;margin:0 auto;padding:20px 32px;display:flex;justify-content:space-between;align-items:center}
+.bar b{font-weight:600}
+.bar nav{display:flex;gap:20px}
+.bar nav a{color:var(--muted)}
+.bar nav a:hover{color:var(--ink)}
 
-/* HERO */
-#hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:0 56px;overflow:hidden}
-canvas#stars{position:absolute;inset:0;pointer-events:none}
-.hero-scan{position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.03) 2px,rgba(0,0,0,.03) 4px);opacity:.6}
-
-/* Astronomy SVG graphic — full hero background */
-.hero-astro{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;opacity:0;animation:fadeIn 1.4s .2s forwards}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-
-.hero-inner{position:relative;z-index:2;max-width:1200px;margin:0 auto;width:100%;display:grid;grid-template-columns:1fr 420px;align-items:center;gap:60px;padding:100px 0 80px}
-.hero-left{display:flex;flex-direction:column;justify-content:center}
-.hero-kicker{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.25em;text-transform:uppercase;color:var(--amber);margin-bottom:20px;opacity:0;animation:up .8s .3s forwards;display:flex;align-items:center;gap:12px}
-.hero-kicker::before{content:'';width:28px;height:1px;background:var(--amber);opacity:.6}
-h1.hero-name{font-family:'Cormorant Garamond',serif;font-size:clamp(4.5rem,9vw,9rem);font-weight:300;line-height:.9;color:var(--cream);letter-spacing:-.02em;opacity:0;animation:up .9s .45s forwards}
-h1.hero-name .italic{font-style:italic;color:var(--amber2)}
-.hero-desc{max-width:460px;font-size:.92rem;color:var(--fog);font-weight:300;line-height:1.9;margin-top:44px;opacity:0;animation:up .9s .65s forwards}
-
-/* Profile image column */
-.hero-right{position:relative;display:flex;flex-direction:column;align-items:center;gap:0;opacity:0;animation:up .9s .55s forwards}
-.hero-photo-wrap{position:relative;width:320px;height:400px;flex-shrink:0}
-.hero-photo-wrap img,.hero-photo-placeholder{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;border-radius:2px}
-.hero-photo-placeholder{background:var(--ink3);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.52rem;color:var(--fog3);letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--fog3)}
-/* Edge-blur mask on all 4 sides */
-.hero-photo-wrap::after{content:'';position:absolute;inset:0;pointer-events:none;border-radius:2px;
-  background:
-    linear-gradient(to bottom, var(--ink) 0%, transparent 18%, transparent 82%, var(--ink) 100%),
-    linear-gradient(to right,  var(--ink) 0%, transparent 18%, transparent 82%, var(--ink) 100%);
-  background-blend-mode:normal;
-  /* Use mask instead for proper blending */
-}
-/* Proper 4-edge fade via mask */
-.hero-photo-wrap{-webkit-mask-image:
-  linear-gradient(to bottom, transparent 0%, black 16%, black 84%, transparent 100%),
-  linear-gradient(to right,  transparent 0%, black 16%, black 84%, transparent 100%);
+/* top: big lead photo + you */
+.hero{max-width:1240px;margin:0 auto;padding:32px 32px 40px;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:64px;align-items:center}
+figure.lead{max-width:none}
+.lead img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:3px}
+.lead figcaption{max-width:520px}
+.me>*+*{margin-top:14px}
+/* profile picture with soft, faded edges */
+.pfp{width:260px;height:320px;margin-bottom:10px;
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 16%,#000 84%,transparent 100%),linear-gradient(to right,transparent 0%,#000 16%,#000 84%,transparent 100%);
   -webkit-mask-composite:source-in;
-  mask-image:
-    linear-gradient(to bottom, transparent 0%, black 16%, black 84%, transparent 100%),
-    linear-gradient(to right,  transparent 0%, black 16%, black 84%, transparent 100%);
-  mask-composite:intersect;
+  mask-image:linear-gradient(to bottom,transparent 0%,#000 16%,#000 84%,transparent 100%),linear-gradient(to right,transparent 0%,#000 16%,#000 84%,transparent 100%);
+  mask-composite:intersect}
+.pfp.big{width:100%;height:auto;aspect-ratio:1;margin:0}
+.pfp img{width:100%;height:100%;object-fit:cover;object-position:center top}
+.status{color:var(--muted)}
+h1{font-size:2.9rem;line-height:1.08;font-weight:600;letter-spacing:-.02em}
+
+/* sections: text in the middle, photos down both sides */
+.sec{max-width:1440px;margin:0 auto;padding:64px 32px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,580px) minmax(0,1fr);column-gap:56px;align-items:start}
+.rail{display:flex;flex-direction:column;gap:40px}
+.rail.l{align-items:flex-end}
+.rail.r{align-items:flex-start}
+figure{width:100%;max-width:240px}
+figure.big{max-width:340px}
+figure.small{max-width:170px}
+figure.drop{margin-top:100px}
+figure button{all:unset;display:block;cursor:zoom-in;width:100%}
+figure img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:3px}
+figure.tall img{aspect-ratio:auto}
+figure.tall.crop img{aspect-ratio:1.1/1;object-position:bottom}
+figcaption{margin-top:8px}
+.place{display:block;font:.75rem/1.4 var(--mono);color:var(--muted)}
+.place.todo{display:inline-block;padding:1px 6px;font-size:.7rem}
+.story{display:block;margin-top:6px;font-size:.92rem;line-height:1.5;color:var(--ink)}
+.story.todo{font:.75rem var(--mono);color:var(--muted)}
+
+/* clusters: small photos from the same place, one caption */
+.cluster{max-width:300px}
+.cluster.big{max-width:360px}
+.cluster .grid{display:grid;grid-template-columns:repeat(var(--cols,2),1fr);gap:6px}
+.cluster .grid img{border-radius:2px}
+.cluster .grid .wide{grid-column:1/-1}
+.cluster .grid .wide img{aspect-ratio:auto}
+.cluster .grid .wide.short img{aspect-ratio:16/10}
+.cluster .grid .nat img{aspect-ratio:auto}
+.cluster.cats .grid{align-items:start}
+.cluster .grid .half{grid-column:span 3}
+.cluster .grid .third{grid-column:span 2}
+.main figure.end{max-width:none;margin-top:48px}
+
+.main>*+*{margin-top:14px}
+.part>*+*{margin-top:14px}
+.part h2+*{margin-top:20px}
+.part.sp{margin-top:56px}
+h2{font-size:1.4rem;font-weight:600;letter-spacing:-.01em}
+.main h2+*{margin-top:20px}
+
+.now{display:grid;grid-template-columns:120px 1fr;gap:22px 20px}
+.now dt{color:var(--muted);padding-top:3px}
+.now dd>*+*{margin-top:8px}
+.before{font-size:.9rem}
+.main *+h2{margin-top:56px}
+.links-list{list-style:none}
+.links-list li{padding:10px 0;border-bottom:1px solid var(--rule)}
+.links-list li:last-child{border-bottom:none}
+.links-list li.todo{border:1px dashed var(--muted);margin-bottom:8px;padding:10px 12px}
+.links-list li span{display:block;font-size:.92rem;margin-top:2px}
+.rows{list-style:none}
+.rows li{display:flex;justify-content:space-between;gap:16px;padding:7px 0;border-bottom:1px solid var(--rule)}
+.rows li:first-child{padding-top:0}
+.rows li:last-child{border-bottom:none}
+
+table{width:100%;border-collapse:collapse;font-size:.92rem}
+th{text-align:left;font:500 .72rem var(--mono);color:var(--muted);padding:0 12px 8px 0;border-bottom:1px solid var(--rule)}
+td{padding:9px 12px 9px 0;border-bottom:1px solid var(--rule);vertical-align:top}
+td:first-child{font:.78rem var(--mono);color:var(--muted);white-space:nowrap;padding-top:12px}
+td:last-child{color:var(--muted)}
+tr.group td{font:500 .72rem var(--mono);color:var(--ink);padding-top:24px;border-bottom:none}
+.table-wrap{overflow-x:auto}
+
+dialog{border:none;padding:0;background:transparent;max-width:min(92vw,1100px);margin:auto}
+dialog::backdrop{background:rgba(8,8,10,.94)}
+dialog img{max-height:82vh;width:auto;margin:0 auto;border-radius:3px}
+dialog p{color:#ccc;text-align:center;margin-top:10px;font:.8rem var(--mono)}
+dialog .x{position:fixed;top:16px;right:20px;background:none;border:none;color:#fff;font:500 .85rem var(--mono);cursor:pointer}
+
+/* things I've done: wide, two columns of table, photos in two columns on the right */
+.done-cols{display:grid;grid-template-columns:1fr 1fr;gap:0 36px}
+.done-cols .table-wrap{margin-top:0}
+/* achievements photos: frames follow each photo's own shape */
+.cluster.feature .grid{grid-template-columns:2fr 1fr;grid-template-rows:1fr 1fr;aspect-ratio:2.582/1}
+.cluster.feature .grid>button:first-child{grid-row:1/3}
+.cluster.trio .grid{grid-template-columns:1fr 2.6fr 1fr;grid-template-rows:1fr;aspect-ratio:2.347/1}
+.cluster.feature .grid img,.cluster.trio .grid img{aspect-ratio:auto;height:100%}
+.pair{display:grid;grid-template-columns:1.5fr 1fr;grid-template-rows:auto auto;gap:0 20px;align-items:stretch}
+.pair figure{display:contents}
+.pair .solo img{aspect-ratio:auto}
+.pair .solo>button{grid-area:1/1}
+.pair .solo figcaption{grid-area:2/1}
+.pair .stack .grid{grid-area:1/2}
+.pair .stack figcaption{grid-area:2/2}
+.cluster.stack .grid{grid-template-columns:1fr;grid-template-rows:1fr 1fr}
+.cluster.stack .grid button{position:relative;min-height:0}
+.cluster.stack .grid img{position:absolute;inset:0;height:100%;aspect-ratio:auto}
+.sec.done .rail.r .span,.sec.done .rail.r .pair{grid-column:1/-1}
+/* full-width photo section at the end */
+.misc{max-width:1440px;margin:0 auto;padding:64px 32px 80px}
+.sec + .misc{padding-top:8px}
+.misc h2{margin-bottom:24px}
+.misc-cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px;align-items:start}
+.misc-cols .col{display:flex;flex-direction:column;gap:36px}
+.misc .col figure,.misc .finale figure{max-width:none}
+.misc .finale{display:grid;grid-template-columns:minmax(0,800px) minmax(0,1fr);gap:48px;align-items:start;margin-top:72px}
+.misc .finale .after{align-self:stretch;display:flex;flex-direction:column}
+.gloss-h{font-weight:500;color:var(--muted);text-transform:lowercase;margin:auto 0 10px;padding-top:28px;font-size:.8rem;letter-spacing:.04em}
+.gloss{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:6px 28px;margin:0;font-size:.82rem}
+.gloss div{display:grid;grid-template-columns:4.6em 1fr;gap:10px;align-items:baseline}
+.gloss dt{font:.78rem var(--mono);color:var(--ink)}
+.gloss dd{margin:0;color:var(--muted);line-height:1.35}
+.updated{margin-top:56px;text-align:center}
+.misc .finale img{aspect-ratio:auto;border-radius:4px}
+@media (min-width:1101px) and (max-width:1340px){.sign-off{font-size:1.5rem}.gloss{font-size:.78rem;gap:4px 24px}.gloss div{grid-template-columns:4.2em 1fr}}
+.sign-off{font-size:2rem;line-height:1.25;font-weight:600;letter-spacing:-.01em;max-width:560px}
+.cluster.feature.sq .grid{aspect-ratio:3/2}
+.cluster .grid img{object-fit:cover}
+
+@media (min-width:1101px){
+  .sec.done{grid-template-columns:minmax(0,1fr) minmax(0,500px)}
+  .sec.done .rail.r{display:grid;grid-template-columns:1fr 1fr;gap:20px 20px;align-items:start}
+  .sec.done .rail.r figure{max-width:none}
 }
-/* Links below photo */
-.hero-photo-links{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:320px}
-.hero-photo-links a{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.16em;text-transform:uppercase;color:white;text-decoration:none;transition:color .2s;display:flex;align-items:center;gap:8px}
-.hero-photo-links a::before{content:'';width:20px;height:1px;background:currentColor;transition:width .2s}
-.hero-photo-links a:hover{color:var(--amber)}.hero-photo-links a:hover::before{width:36px}
+@media (max-width:1100px){
+  .done-cols{grid-template-columns:1fr}
 
-@keyframes up{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
-
-/* HERO — MOBILE */
-@media(max-width:768px){
-  #hero{padding:0 24px;min-height:100svh}
-  .hero-inner{
-    grid-template-columns:1fr;
-    gap:32px;
-    padding:100px 0 80px;
-    text-align:center;
-  }
-  /* Photo column: below text */
-  .hero-right{order:1;gap:0;position:relative}
-  .hero-photo-wrap{width:260px;height:320px;margin:0 auto}
-  /* Links overlap the bottom of the photo via negative margin */
-  .hero-photo-links{
-    margin-top:-48px;
-    align-items:center;
-    z-index:3;
-    position:relative;
-    flex-direction:row;
-    gap:20px;
-    white-space:nowrap;
-  }
-  /* Kicker line: center */
-  .hero-kicker{justify-content:center}
-  .hero-kicker::before{display:none}
-  /* Description: full width, centered, whiter */
-  .hero-desc{max-width:100%;margin-top:24px;color:var(--cream2)}
-  /* Hero name: pure white for contrast */
-  h1.hero-name{color:#ffffff}
+  /* phones: photos sit next to the writing they belong to */
+  .sec .main{display:contents}
+  .sec .main>*,.sec .part{grid-column:1/-1;order:var(--o,0)}
+  .sec .rail>*{order:var(--o,50)}
+  .sec.done .main>h2{order:1}
+  .sec.done .done-cols{display:contents}
+  .sec.done .done-cols>.table-wrap{grid-column:1/-1}
+  .sec.done .done-cols>.table-wrap:first-child{order:2}
+  .sec.done .done-cols>.table-wrap:last-child{order:5}
+  .sec.done .done-cols>.table-wrap:last-child thead{display:none}
+  .bar nav{display:flex;gap:12px;font-size:.72rem}
+  .misc{padding:44px 20px 56px;max-width:680px}
+  .sec + .misc{padding-top:12px}
+  .misc-cols{grid-template-columns:1fr}
+  .misc .finale{grid-template-columns:1fr;gap:20px}
+  .sign-off{font-size:1.5rem}
+  .pair,.cluster.feature,.cluster.trio{grid-column:1/-1}
+  .cluster.feature .grid{grid-template-columns:2fr 1fr}
+  .cluster.trio .grid{grid-template-columns:1fr 2.6fr 1fr}
+  .cluster.stack .grid{grid-template-columns:1fr}
 }
 
-/* SHARED SECTION CHROME */
-section{padding:112px 56px;position:relative}
-.si{max-width:1100px;margin:0 auto}
-.eyebrow{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.24em;text-transform:uppercase;color:var(--amber);margin-bottom:56px;display:flex;align-items:center;gap:16px}
-.eyebrow::after{content:'';flex:1;height:1px;background:var(--fog3);opacity:.5}
-.sh{font-family:'Cormorant Garamond',serif;font-size:clamp(1.8rem,3.5vw,2.7rem);font-weight:300;color:var(--cream);line-height:1.1;margin-bottom:52px}
-.sh em{font-style:italic;color:var(--amber2)}
-
-/* ───── SHARED INLINE HYPERLINK STYLE ───── */
-/* Used for links embedded in body copy/headings — subtle underline that brightens on hover, keeps the reading flow intact */
-a.lnk{color:inherit;text-decoration:none;border-bottom:1px solid rgba(200,134,58,.4);transition:border-color .25s,color .25s;padding-bottom:.5px}
-a.lnk:hover{color:var(--amber2);border-color:var(--amber2)}
-a.lnk-name{color:inherit;text-decoration:none;border-bottom:1px solid rgba(200,134,58,.32);transition:border-color .25s,color .25s}
-a.lnk-name:hover{color:var(--amber2);border-color:var(--amber2)}
-
-/* ───── OLYMPIADS ───── */
-#olympiads{background:var(--ink)}
-.oly-layout{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(255,255,255,.05);margin-bottom:1px}
-.oly-cell{background:var(--ink);padding:40px 36px;position:relative;overflow:hidden;transition:background .3s;cursor:default}
-.oly-cell::before{content:'';position:absolute;inset:0;background:var(--glow);opacity:0;transition:opacity .4s;pointer-events:none}
-.oly-cell:hover{background:var(--ink3)}.oly-cell:hover::before{opacity:1}
-.oly-line{position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--amber),var(--amber3));transform:scaleX(0);transform-origin:left;transition:transform .45s}
-.oly-cell:hover .oly-line{transform:scaleX(1)}
-.oly-idx{font-family:'Cormorant Garamond',serif;font-size:3.5rem;font-weight:300;color:var(--fog3);line-height:1;position:absolute;right:28px;top:24px;font-style:italic;transition:color .3s}
-.oly-cell:hover .oly-idx{color:var(--fog2)}
-.oly-year{font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.16em;text-transform:uppercase;color:var(--amber);margin-bottom:10px}
-.oly-name{font-family:'Cormorant Garamond',serif;font-size:1.45rem;font-weight:400;color:var(--cream);line-height:1.2;margin-bottom:12px;padding-right:40px}
-.oly-stat{font-size:.83rem;color:var(--fog);font-weight:300;line-height:1.75}
-.oly-badge{display:inline-flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:.52rem;letter-spacing:.1em;text-transform:uppercase;color:var(--amber3);background:rgba(200,134,58,.08);border:1px solid rgba(200,134,58,.2);padding:4px 10px;margin-top:14px}
-.oly-badge::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--amber3)}
-/* IJHS — full-width accent row */
-.oly-full{background:var(--ink2);padding:32px 36px;display:flex;align-items:center;justify-content:space-between;gap:40px;border-top:1px solid rgba(255,255,255,.04)}
-.oly-full-left{flex:1}
-.oly-full-right{text-align:right;flex-shrink:0}
-.oly-full-num{font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:300;color:var(--amber);font-style:italic;line-height:1}
-.oly-full-lbl{font-family:'JetBrains Mono',monospace;font-size:.54rem;letter-spacing:.14em;text-transform:uppercase;color:var(--fog2);margin-top:4px}
-
-/* ───── PHOTO GRID (masonry columns) ───── */
-.photo-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
-.pg-col{display:flex;flex-direction:column;gap:5px}
-.photo-cell{overflow:hidden;position:relative;cursor:pointer;transition:opacity .3s}
-.photo-cell:hover{opacity:.88}
-.photo-cell-inner{width:100%;overflow:hidden;display:block}
-.photo-cell-inner img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s}
-.photo-cell:hover .photo-cell-inner img{transform:scale(1.04)}
-@media(max-width:700px){.photo-grid{grid-template-columns:repeat(2,1fr)}}
-
-/* ───── EA ───── */
-#ea{background:var(--ink2)}
-/* EA uses a horizontal card layout instead of timeline for variety */
-.ea-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:rgba(255,255,255,.04)}
-.ea-card{background:var(--ink2);padding:36px 28px;position:relative;overflow:hidden;transition:background .3s;cursor:default}
-.ea-card:hover{background:var(--ink3)}
-.ea-card-accent{position:absolute;left:0;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--amber),transparent);opacity:0;transition:opacity .4s}
-.ea-card:hover .ea-card-accent{opacity:1}
-.ea-tag{font-family:'JetBrains Mono',monospace;font-size:.54rem;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);margin-bottom:6px}
-.ea-when{font-family:'JetBrains Mono',monospace;font-size:.52rem;letter-spacing:.1em;color:var(--fog3);margin-bottom:14px}
-.ea-role{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:400;color:var(--cream);line-height:1.2;margin-bottom:4px}
-.ea-org{font-size:.78rem;color:var(--amber);text-decoration:none;display:inline-block;margin-bottom:14px;transition:color .2s}.ea-org:hover{color:var(--amber3)}
-.ea-desc{font-size:.83rem;color:var(--fog);font-weight:300;line-height:1.8}
-
-/* ───── CAMPS ───── */
-#camps{background:var(--ink3);overflow:hidden}
-/* Horizontal scroll strip for variety */
-.camps-scroll-hint{font-family:'JetBrains Mono',monospace;font-size:.52rem;letter-spacing:.12em;text-transform:uppercase;color:var(--fog3);margin-bottom:20px}
-.camps-strip{display:grid;grid-template-columns:repeat(5,320px);gap:16px;overflow-x:auto;padding-bottom:12px;scrollbar-width:none;-ms-overflow-style:none}
-.camps-strip::-webkit-scrollbar{display:none}
-.camp-card{position:relative;overflow:hidden;background:var(--ink);border:1px solid var(--fog3);transition:border-color .3s;flex-shrink:0}
-.camp-card:hover{border-color:var(--amber)}
-.camp-photo{width:100%;aspect-ratio:4/3;background:var(--ink2);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
-.camp-photo img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s}
-.camp-card:hover .camp-photo img{transform:scale(1.04)}
-.camp-photo-placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--fog3);font-family:'JetBrains Mono',monospace;font-size:.5rem;letter-spacing:.06em;writing-mode:vertical-rl;opacity:.4}
-.camp-body{padding:20px 18px}
-.camp-name{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:400;color:var(--cream);line-height:1.25;margin-bottom:6px}
-.camp-year{font-family:'JetBrains Mono',monospace;font-size:.52rem;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);margin-bottom:8px}
-.camp-desc{font-size:.76rem;color:var(--fog);font-weight:300;line-height:1.65}
-
-/* ───── SCORES ───── */
-#scores{background:var(--ink)}
-/* Scores: large asymmetric layout — SAT big, APs smaller */
-.scores-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:rgba(255,255,255,.03)}
-.score-cell{background:var(--ink2);padding:40px 32px;position:relative;overflow:hidden;transition:background .3s}
-.score-cell:hover{background:var(--ink3)}
-.score-cell::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--amber),transparent);transform:scaleX(0);transform-origin:left;transition:transform .4s}
-.score-cell:hover::after{transform:scaleX(1)}
-.score-n{font-family:'Cormorant Garamond',serif;font-size:3.2rem;font-weight:300;color:var(--amber2);line-height:1;letter-spacing:-.02em}
-.score-n sup{font-size:1.1rem;vertical-align:top;margin-top:.6rem;display:inline-block;color:var(--fog2)}
-.score-label{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--cream2);margin-top:14px}
-.score-note{font-size:.8rem;color:var(--fog2);margin-top:6px;font-weight:300}
-.self-tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.48rem;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);background:rgba(200,134,58,.08);border:1px solid rgba(200,134,58,.18);padding:2px 7px;margin-top:12px}
-.score-n{font-family:'Cormorant Garamond',serif;font-size:3rem;font-weight:300;color:var(--amber2);line-height:1}
-.score-label{font-family:'JetBrains Mono',monospace;font-size:.54rem;letter-spacing:.12em;text-transform:uppercase;color:var(--cream2);margin-top:10px}
-.score-note{font-size:.74rem;color:var(--fog2);margin-top:5px;font-weight:300}
-
-/* ───── SCHOOL ───── */
-#school{background:var(--ink2)}
-/* Mega school box */
-.school-mega{background:var(--ink);border:1px solid rgba(255,255,255,.07);overflow:hidden}
-.school-mega-header{background:var(--ink3);padding:28px 36px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:space-between;gap:20px}
-.school-mega-title{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:400;color:var(--cream);line-height:1.2}
-.school-mega-meta{font-family:'JetBrains Mono',monospace;font-size:.54rem;letter-spacing:.12em;text-transform:uppercase;color:var(--fog3)}
-.school-divider{height:1px;background:rgba(255,255,255,.05)}
-/* Scores row */
-.school-scores{display:flex;gap:0;border-bottom:1px solid rgba(255,255,255,.05)}
-.sc-block{flex:1;padding:30px 28px;border-right:1px solid rgba(255,255,255,.05);border-bottom:2px solid transparent;transition:border-color .3s,background .3s}
-.sc-block:last-child{border-right:none}
-.sc-block:hover{border-bottom-color:var(--amber);background:var(--ink2)}
-.sc-n{font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:300;color:var(--amber);line-height:1}
-.sc-lbl{font-family:'JetBrains Mono',monospace;font-size:.54rem;letter-spacing:.12em;text-transform:uppercase;color:var(--fog2);margin-top:8px}
-.sc-sub{font-size:.78rem;color:var(--fog);margin-top:5px;font-weight:300}
-/* Activities sub-section within mega box */
-.school-acts-header{padding:24px 36px 20px;background:var(--ink2);border-top:1px solid rgba(255,255,255,.05)}
-.school-sub-heading{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:300;color:var(--cream2);font-style:italic;border-left:2px solid var(--amber);padding-left:16px}
-.school-acts-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:0;border-top:1px solid rgba(255,255,255,.05)}
-.school-acts-grid>div{min-width:0}
-/* TEDx side */
-.tedx-panel{padding:32px 36px;border-right:1px solid rgba(255,255,255,.05)}
-.tedx-logo-row{display:flex;align-items:center;flex-wrap:wrap;gap:10px 14px;margin-bottom:18px}
-.tedx-logo{height:26px;width:auto;display:block;opacity:.95;flex-shrink:0}
-.tedx-logo-line{flex:1;height:1px;background:linear-gradient(90deg,rgba(226,54,64,.55),rgba(226,54,64,0))}
-.tedx-logo-tag{display:flex;align-items:center;gap:7px;font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.16em;text-transform:uppercase;color:var(--cream2);flex-shrink:0}
-.tedx-logo-dot{width:6px;height:6px;border-radius:50%;background:#E2364A;flex-shrink:0;animation:pulse 1.8s ease-in-out infinite}
-.tedx-thumb{display:block;position:relative;width:100%;aspect-ratio:3/2;background:var(--ink3);border:1px solid var(--fog3);font-family:'JetBrains Mono',monospace;font-size:.5rem;color:var(--fog3);text-decoration:none;transition:border-color .3s;margin-bottom:18px;overflow:hidden}
-.tedx-thumb:hover{border-color:var(--amber)}
-.tedx-thumb img{width:100%;height:100%;object-fit:cover;display:block}
-.tedx-thumb-placeholder{display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-family:'JetBrains Mono',monospace;font-size:.5rem;color:var(--fog3);letter-spacing:.06em}
-/* Watch button overlaid on the TEDx thumbnail — replaces "click on thumbnail to watch" text */
-.tedx-watch-btn{position:absolute;left:14px;bottom:14px;display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:.54rem;letter-spacing:.14em;text-transform:uppercase;color:var(--cream);background:rgba(8,9,12,.72);backdrop-filter:blur(6px);border:1px solid rgba(237,233,225,.25);padding:8px 14px;transition:all .25s;z-index:2}
-.tedx-watch-btn::before{content:'▶';font-size:.6rem;color:var(--amber2);transition:transform .25s}
-.tedx-thumb:hover .tedx-watch-btn{border-color:var(--amber);color:var(--amber2);background:rgba(8,9,12,.85)}
-.tedx-thumb:hover .tedx-watch-btn::before{transform:scale(1.15)}
-.tedx-info .tag2{font-family:'JetBrains Mono',monospace;font-size:.54rem;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);margin-bottom:8px}
-.tedx-info h4{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:400;color:var(--cream);margin-bottom:10px;line-height:1.2}
-.tedx-info p{font-size:.88rem;color:var(--fog);font-weight:300;line-height:1.75}
-/* activities side — simple list, sized to roughly match the TEDx panel's height */
-.act-panel{padding:32px 36px}
-.act-list-item{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.04);align-items:flex-start}
-.act-list-item:first-child{padding-top:2px}
-.act-list-item:last-child{border-bottom:none;padding-bottom:0}
-.act-dot{width:4px;height:4px;border-radius:50%;background:var(--amber);flex-shrink:0;margin-top:7px}
-.act-list-title{font-size:.94rem;color:var(--cream);font-weight:400;line-height:1.3;margin-bottom:5px}
-.act-list-desc{font-size:.82rem;color:var(--fog2);font-weight:300;line-height:1.7}
-
-/* ───── LIFE / INTERESTS ───── */
-#personal{background:var(--ink3)}
-.life-stack{display:flex;flex-direction:column;gap:64px}
-/* Photography — dense masonry-like strip */
-.photo-row-label{font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.2em;text-transform:uppercase;color:var(--fog2);margin-bottom:16px}
-.photo-strip{display:grid;grid-template-columns:repeat(8,1fr);gap:4px}
-.photo-cell{background:var(--ink);border:1px solid rgba(255,255,255,.04);overflow:hidden;position:relative;cursor:pointer;transition:border-color .3s}
-.photo-cell:hover{border-color:var(--amber)}
-.photo-cell.tall{grid-row:span 2}
-.photo-cell-inner{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
-.photo-cell.tall .photo-cell-inner{aspect-ratio:1/2}
-.photo-cell-inner img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
-.photo-cell:hover .photo-cell-inner img{transform:scale(1.07)}
-.photo-placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.4rem;color:var(--fog3);letter-spacing:.06em}
-/* Books + Music side by side */
-.bm-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px}
-.track{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.04)}
-.track:last-child{border-bottom:none}
-.track-n{font-family:'JetBrains Mono',monospace;font-size:.54rem;color:var(--fog3);width:14px;flex-shrink:0;text-align:center}
-.track-cover{width:34px;height:34px;background:var(--ink2);flex-shrink:0;border:1px solid var(--fog3);display:flex;align-items:center;justify-content:center;font-size:.44rem;color:var(--fog3);font-family:'JetBrains Mono',monospace;overflow:hidden}
-.track-cover img{width:100%;height:100%;object-fit:cover}
-.track-info{flex:1;min-width:0}
-.track-title{font-size:.84rem;color:var(--cream);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.track-artist{font-size:.73rem;color:var(--fog2);font-weight:300}
-.playing-dot{width:5px;height:5px;border-radius:50%;background:var(--amber);flex-shrink:0;animation:pulse 1.8s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.8)}}
-.book-item{display:flex;gap:12px;margin-bottom:20px}
-.book-item:last-child{margin-bottom:0}
-.book-cover{width:38px;height:54px;background:var(--ink2);flex-shrink:0;border:1px solid var(--fog3);display:flex;align-items:center;justify-content:center;font-size:.42rem;color:var(--fog3);font-family:'JetBrains Mono',monospace;overflow:hidden}
-.book-cover img{width:100%;height:100%;object-fit:cover}
-.book-title{font-family:'Cormorant Garamond',serif;font-size:1rem;color:var(--cream);font-weight:400;line-height:1.2}
-.book-author{font-size:.7rem;color:var(--fog2);margin-bottom:5px;font-weight:300}
-.book-thought{font-size:.78rem;color:var(--fog);font-weight:300;line-height:1.65;font-style:italic}
-
-/* ───── CONTACT ───── */
-#contact{background:var(--ink);text-align:center;padding:130px 56px;overflow:hidden;position:relative}
-.contact-bg-text{position:absolute;font-family:'Cormorant Garamond',serif;font-size:clamp(8rem,18vw,16rem);font-weight:300;color:rgba(255,255,255,.015);line-height:1;top:50%;left:50%;transform:translate(-50%,-50%);white-space:nowrap;pointer-events:none;font-style:italic;letter-spacing:-.02em}
-.contact-inner{position:relative;z-index:2}
-.contact-h{font-family:'Cormorant Garamond',serif;font-size:clamp(3rem,7vw,6rem);font-weight:300;color:var(--cream);line-height:1;margin-bottom:20px}
-.contact-h em{font-style:italic;color:var(--amber2)}
-.contact-sub{color:var(--fog);font-size:.88rem;max-width:380px;margin:0 auto 48px;font-weight:300;line-height:1.85}
-.contact-btns{display:flex;justify-content:center;gap:14px;flex-wrap:wrap}
-.cbtn{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--cream);text-decoration:none;border:1px solid var(--fog3);padding:13px 28px;transition:all .25s}
-.cbtn:hover{border-color:var(--amber);color:var(--amber)}
-.cbtn.fill{background:var(--amber);color:var(--ink);border-color:var(--amber)}
-.cbtn.fill:hover{background:var(--amber2);border-color:var(--amber2);color:var(--ink)}
-
-footer{background:var(--ink);border-top:1px solid rgba(255,255,255,.04);padding:24px 56px;display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.08em;color:var(--fog3)}
-
-/* REVEAL */
-.r{opacity:0;transform:translateY(26px);transition:opacity .75s ease,transform .75s ease}
-.r.delay1{transition-delay:.1s}.r.delay2{transition-delay:.2s}.r.delay3{transition-delay:.3s}
-.r.v{opacity:1;transform:none}
-
-/* PARALLAX SECTION DIVIDERS */
-.divider{height:1px;background:linear-gradient(90deg,transparent,var(--fog3) 30%,var(--fog3) 70%,transparent);opacity:.3}
-
-@media(max-width:1000px){
-  nav{padding:18px 24px}nav.scrolled{padding:12px 24px}
-  .nav-links{display:none}
-  section{padding:80px 24px}
-  #hero{padding:0 24px 64px}
-  .oly-layout{grid-template-columns:1fr}
-  .scores-grid{grid-template-columns:repeat(2,1fr)}
-  .ea-cards{grid-template-columns:1fr}
-  .school-scores{flex-direction:column}
-  .school-acts-grid,.bm-grid{grid-template-columns:1fr}
-  .tedx-panel{border-right:none;border-bottom:1px solid rgba(255,255,255,.05)}
-  .tedx-logo{height:auto;width:150px;max-width:55%}
-  .tedx-logo-line{min-width:40px}
-  .school-mega-header{flex-direction:column;align-items:flex-start;gap:8px}
-  .photo-strip{grid-template-columns:repeat(4,1fr)}
-  .hero-row{flex-direction:column;gap:24px}
-  .hero-nav{align-items:flex-start}
-  footer{flex-direction:column;gap:8px;text-align:center}
-  .camps-strip{grid-template-columns:repeat(5,260px)}
+@media (max-width:1100px){
+  .hero{grid-template-columns:1fr;gap:36px;max-width:680px;padding:24px 20px 32px}
+  .sec{grid-template-columns:1fr 1fr;column-gap:12px;row-gap:24px;max-width:680px;padding:44px 20px}
+  .main{grid-column:1/-1;order:-1}
+  .rail{display:contents}
+  figure,figure.small,figure.big{max-width:none}
+  figure.big{grid-column:1/-1}
+  figure.drop{margin-top:0}
+  .rail .cluster{grid-column:1/-1;max-width:none}
+  .cluster .grid{grid-template-columns:repeat(var(--mcols,3),1fr)}
+  .cluster .grid .wide{grid-column:1/-1}
+  .bar{padding:18px 20px}
 }
-@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.r{opacity:1;transform:none}}
+@media (max-width:600px){
+  h1{font-size:2.2rem}
+  .now{grid-template-columns:1fr;gap:6px}
+  .now dd{margin-bottom:16px}
+}
 </style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav id="nav">
-  <a href="#hero" class="nav-logo">Dhruv Singhvi</a>
-  <ul class="nav-links">
-    <li><a href="#olympiads">Olympiads</a></li>
-    <li><a href="#ea">EA</a></li>
-    <li><a href="#camps">Camps</a></li>
-    <li><a href="#scores">Scores</a></li>
-    <li><a href="#school">School</a></li>
-    <li><a href="#personal">Life</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ul>
-</nav>
+<header class="bar">
+  <b>Dhruv Singhvi</b>
+  <nav class="mono"><a href="#done">done</a><a href="#now">now</a><a href="#thoughts">thoughts</a><a href="#links">links</a><a href="#clicks">clicks</a></nav>
+</header>
 
-<!-- HERO -->
-<section id="hero">
-  <canvas id="stars"></canvas>
-  <div class="hero-scan"></div>
-
-  <!-- Astronomy decorative SVG — full hero background, content-safe -->
-  <svg class="hero-astro" viewBox="0 0 1400 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-    <defs>
-
-      <!-- Edge-only visibility mask: transparent in the central content zone, visible at borders -->
-      <radialGradient id="contentSafe" cx="50%" cy="50%" r="55%">
-        <stop offset="0%"   stop-color="black" stop-opacity="0"/>
-        <stop offset="55%"  stop-color="black" stop-opacity="0"/>
-        <stop offset="75%"  stop-color="black" stop-opacity=".6"/>
-        <stop offset="100%" stop-color="black" stop-opacity="1"/>
-      </radialGradient>
-      <!-- Full-visible mask for elements intentionally placed at edge -->
-      <radialGradient id="edgeFade" cx="50%" cy="50%" r="70%">
-        <stop offset="40%"  stop-color="white" stop-opacity="0"/>
-        <stop offset="78%"  stop-color="white" stop-opacity=".85"/>
-        <stop offset="100%" stop-color="white" stop-opacity="1"/>
-      </radialGradient>
-      <mask id="edgeMask"><rect width="1400" height="900" fill="url(#edgeFade)"/></mask>
-
-      <!-- Nebula gradient: upper-right corner bloom -->
-      <radialGradient id="nebulaUR" cx="88%" cy="8%" r="45%">
-        <stop offset="0%"   stop-color="rgba(200,130,60,1)"  stop-opacity=".3"/>
-        <stop offset="40%"  stop-color="rgba(140,85,175,1)"  stop-opacity=".15"/>
-        <stop offset="80%"  stop-color="rgba(60,90,180,1)"   stop-opacity=".07"/>
-        <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
-      </radialGradient>
-      <!-- Nebula gradient: lower-left corner bloom -->
-      <radialGradient id="nebulaLL" cx="6%" cy="92%" r="40%">
-        <stop offset="0%"   stop-color="rgba(90,130,220,1)"  stop-opacity=".22"/>
-        <stop offset="50%"  stop-color="rgba(65,95,175,1)"   stop-opacity=".1"/>
-        <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
-      </radialGradient>
-      <!-- Amber veil along right edge -->
-      <linearGradient id="rightVeil" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="65%"  stop-color="rgba(0,0,0,0)"/>
-        <stop offset="100%" stop-color="rgba(200,134,58,.1)"/>
-      </linearGradient>
-
-      <!-- Filters -->
-      <filter id="starGlow" x="-150%" y="-150%" width="400%" height="400%">
-        <feGaussianBlur in="SourceGraphic" stdDeviation="3.5" result="b"/>
-        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-      </filter>
-      <filter id="planetGlow" x="-100%" y="-100%" width="300%" height="300%">
-        <feGaussianBlur in="SourceGraphic" stdDeviation="7" result="b"/>
-        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-      </filter>
-      <filter id="nebulaBlur" x="-20%" y="-20%" width="140%" height="140%">
-        <feGaussianBlur in="SourceGraphic" stdDeviation="18"/>
-      </filter>
-      <filter id="softGlow" x="-60%" y="-60%" width="220%" height="220%">
-        <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="b"/>
-        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-      </filter>
-      <filter id="amberGlow" x="-80%" y="-80%" width="260%" height="260%">
-        <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur"/>
-        <feColorMatrix in="blur" type="matrix" values="1.35 .55 0 0 .08  .68 .32 0 0 .02  0 0 .1 0 0  0 0 0 1.3 0" result="colored"/>
-        <feMerge><feMergeNode in="colored"/><feMergeNode in="SourceGraphic"/></feMerge>
-      </filter>
-
-      <!-- Arc path for annotation text — lower-right sweep -->
-      <path id="annotArcLR" d="M 1050,750 a 220,220 0 0,1 240,-160"/>
-      <!-- Arc path for upper-right label sweep -->
-      <path id="annotArcUR" d="M 1100,80 a 200,200 0 0,1 180,120"/>
-
-      <style>
-        /* Orbit arcs — large radii, centred off-canvas bottom-right so only arcs clip through */
-        .orbit-arc{fill:none;stroke:rgba(210,145,65,.42);stroke-width:1.1}
-        .orbit-arc-faint{fill:none;stroke:rgba(210,145,65,.2);stroke-width:.7;stroke-dasharray:3 18}
-        .orbit-arc-med{fill:none;stroke:rgba(210,145,65,.28);stroke-width:.85;stroke-dasharray:4 14}
-        .grid-line{stroke:rgba(200,134,58,.09);stroke-width:.5;fill:none}
-        .const-line{stroke:rgba(237,233,225,.3);stroke-width:.9;fill:none}
-        .tick-mark{stroke:rgba(210,145,65,.65);stroke-width:1.2;fill:none}
-        @keyframes rotSlow{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-        @keyframes rotMed{from{transform:rotate(0deg)}to{transform:rotate(-360deg)}}
-        @keyframes rotFast{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-        @keyframes twinkle{0%,100%{opacity:.9}50%{opacity:.3}}
-        @keyframes twinkleB{0%,100%{opacity:.7}50%{opacity:.2}}
-        /* Orbit centres are anchored far off-canvas so arcs only enter frame at edges */
-        .g-orbit-slow{transform-origin:1500px 950px;animation:rotSlow 120s linear infinite}
-        .g-orbit-med{transform-origin:1480px 950px;animation:rotMed 75s linear infinite}
-        .g-orbit-fast{transform-origin:1490px 940px;animation:rotFast 40s linear infinite}
-        /* Upper-left orbit — separate centre */
-        .g-orbit-ul{transform-origin:-100px -80px;animation:rotSlow 100s linear infinite reverse}
-        .t1{animation:twinkle 3.1s ease-in-out infinite}
-        .t2{animation:twinkle 2.4s ease-in-out .6s infinite}
-        .t3{animation:twinkle 4.2s ease-in-out 1.2s infinite}
-        .t4{animation:twinkleB 2.8s ease-in-out 1.8s infinite}
-        .t5{animation:twinkleB 3.6s ease-in-out .3s infinite}
-      </style>
-    </defs>
-
-    <!-- ══ NEBULA BLOOMS (purely decorative atmospheric colour) ══ -->
-    <!-- Upper-right nebula -->
-    <rect width="1400" height="900" fill="url(#nebulaUR)"/>
-    <!-- Additional nebula wisps upper-right -->
-    <ellipse cx="1280" cy="90" rx="200" ry="140" fill="rgba(180,110,50,.07)" filter="url(#nebulaBlur)"/>
-    <ellipse cx="1350" cy="200" rx="140" ry="100" fill="rgba(100,80,180,.06)" filter="url(#nebulaBlur)"/>
-    <!-- Lower-left nebula -->
-    <rect width="1400" height="900" fill="url(#nebulaLL)"/>
-    <ellipse cx="60" cy="820" rx="180" ry="130" fill="rgba(60,100,200,.07)" filter="url(#nebulaBlur)"/>
-    <ellipse cx="140" cy="760" rx="120" ry="90"  fill="rgba(80,60,160,.05)" filter="url(#nebulaBlur)"/>
-    <!-- Amber right-edge veil -->
-    <rect width="1400" height="900" fill="url(#rightVeil)"/>
-
-    <!-- ══ LARGE ORBIT ARCS — centre anchored at (1500, 950), sweeping bottom-right into view ══ -->
-    <g class="g-orbit-slow">
-      <!-- Ring r=580: arc enters bottom-right corner -->
-      <circle cx="1500" cy="950" r="580" class="orbit-arc-faint" stroke-dasharray="5 22"/>
-      <!-- Planet on this ring -->
-      <g transform="translate(1500,950) rotate(-38) translate(0,-580)">
-        <circle r="11" fill="rgba(210,150,75,.26)" filter="url(#planetGlow)"/>
-        <circle r="8.5" fill="#D6934E" filter="url(#amberGlow)"/>
-        <!-- Saturn-like rings -->
-        <ellipse rx="19" ry="5.5" fill="none" stroke="rgba(225,170,85,.8)" stroke-width="1.5" transform="rotate(-22)"/>
-        <ellipse rx="24.5" ry="7.2" fill="none" stroke="rgba(225,170,85,.4)" stroke-width=".9" transform="rotate(-22)"/>
-      </g>
-    </g>
-    <g class="g-orbit-med">
-      <circle cx="1500" cy="950" r="460" class="orbit-arc-med"/>
-      <!-- Small ice-blue world -->
-      <g transform="translate(1500,950) rotate(-55) translate(0,-460)">
-        <circle r="7"   fill="rgba(150,180,250,.2)" filter="url(#planetGlow)"/>
-        <circle r="5.5" fill="rgba(165,200,250,.95)" filter="url(#starGlow)"/>
-      </g>
-      <!-- Companion moon offset 180° -->
-      <g transform="translate(1500,950) rotate(125) translate(0,-460)">
-        <circle r="3" fill="rgba(237,233,225,.6)" filter="url(#starGlow)"/>
-      </g>
-    </g>
-    <g class="g-orbit-fast">
-      <circle cx="1500" cy="950" r="340" class="orbit-arc" stroke-dasharray="2 14" stroke="rgba(200,134,58,.22)"/>
-      <!-- Fast inner dot -->
-      <g transform="translate(1500,950) rotate(-70) translate(0,-340)">
-        <circle r="3.5" fill="rgba(240,200,120,.9)" filter="url(#starGlow)"/>
-      </g>
-    </g>
-
-    <!-- ══ UPPER-LEFT ORBIT ARCS — centre at (-100, -80) ══ -->
-    <g class="g-orbit-ul">
-      <circle cx="-100" cy="-80" r="520" class="orbit-arc-faint" stroke-dasharray="4 20"/>
-      <g transform="translate(-100,-80) rotate(28) translate(0,-520)">
-        <circle r="5" fill="rgba(200,210,255,.7)" filter="url(#starGlow)"/>
-      </g>
-      <circle cx="-100" cy="-80" r="390" class="orbit-arc-med"/>
-      <g transform="translate(-100,-80) rotate(42) translate(0,-390)">
-        <circle r="3.5" fill="rgba(237,233,225,.55)"/>
-      </g>
-    </g>
-
-    <!-- ══ TICK MARKS along right-edge arc — decorative instrument feel ══ -->
-    <!-- These are fixed (not rotating), placed along where the orbit arcs enter the right edge -->
-    <g class="tick-mark">
-      <!-- A row of ticks along right-side -->
-      <line x1="1370" y1="200" x2="1382" y2="200"/>
-      <line x1="1375" y1="250" x2="1387" y2="250"/>
-      <line x1="1378" y1="300" x2="1390" y2="300"/>
-      <line x1="1380" y1="350" x2="1392" y2="350"/>
-      <line x1="1379" y1="400" x2="1391" y2="400"/>
-      <line x1="1377" y1="450" x2="1389" y2="450"/>
-      <line x1="1373" y1="500" x2="1385" y2="500"/>
-      <line x1="1368" y1="550" x2="1380" y2="550"/>
-      <!-- Bottom ticks -->
-      <line x1="1100" y1="875" x2="1100" y2="887"/>
-      <line x1="1150" y1="878" x2="1150" y2="890"/>
-      <line x1="1200" y1="880" x2="1200" y2="892"/>
-      <line x1="1250" y1="882" x2="1250" y2="894"/>
-      <line x1="1300" y1="883" x2="1300" y2="895"/>
-    </g>
-
-    <!-- ══ COORDINATE GRID LINES — very faint, confined to edges ══ -->
-    <!-- Only partial lines so they don't cross the content area -->
-    <line class="grid-line" x1="0"    y1="0"   x2="0"    y2="900"/>
-    <line class="grid-line" x1="1400" y1="0"   x2="1400" y2="900"/>
-    <line class="grid-line" x1="0"    y1="0"   x2="1400" y2="0"/>
-    <line class="grid-line" x1="0"    y1="900" x2="1400" y2="900"/>
-    <!-- Subtle diagonal ruled lines, very faint -->
-    <line class="grid-line" x1="0" y1="0" x2="300" y2="900" opacity=".5"/>
-    <line class="grid-line" x1="1400" y1="0" x2="1100" y2="900" opacity=".5"/>
-
-    <!-- ══ UPPER-RIGHT CONSTELLATION (Orion-like) ══ -->
-    <g mask="url(#edgeMask)">
-      <g class="t1" filter="url(#starGlow)">
-        <circle cx="1060" cy="95"  r="3.5" fill="rgba(200,210,255,.95)"/>
-      </g>
-      <g class="t2">
-        <circle cx="1110" cy="130" r="2.5" fill="rgba(200,210,255,.85)" filter="url(#starGlow)"/>
-      </g>
-      <g class="t3">
-        <circle cx="1155" cy="108" r="4.2" fill="rgba(220,225,255,.95)" filter="url(#starGlow)"/>
-      </g>
-      <g class="t1">
-        <circle cx="1200" cy="72"  r="2.8" fill="rgba(200,210,255,.8)"/>
-      </g>
-      <g class="t4">
-        <circle cx="1075" cy="178" r="2.2" fill="rgba(237,233,225,.7)" filter="url(#starGlow)"/>
-      </g>
-      <g class="t2">
-        <circle cx="1122" cy="192" r="3.0" fill="rgba(237,233,225,.85)" filter="url(#starGlow)"/>
-      </g>
-      <g class="t3">
-        <circle cx="1168" cy="180" r="2.4" fill="rgba(237,233,225,.75)"/>
-      </g>
-      <g class="t1">
-        <circle cx="1085" cy="238" r="2.8" fill="rgba(200,210,255,.8)" filter="url(#starGlow)"/>
-      </g>
-      <g class="t2">
-        <circle cx="1175" cy="242" r="3.5" fill="rgba(220,200,170,.9)" filter="url(#starGlow)"/>
-      </g>
-      <g class="const-line">
-        <line x1="1060" y1="95"  x2="1155" y2="108"/>
-        <line x1="1155" y1="108" x2="1200" y2="72"/>
-        <line x1="1110" y1="130" x2="1122" y2="192"/>
-        <line x1="1122" y1="192" x2="1175" y2="242"/>
-        <line x1="1085" y1="238" x2="1175" y2="242"/>
-        <line x1="1075" y1="178" x2="1085" y2="238"/>
-      </g>
-      <text x="1204" y="66" font-family="'JetBrains Mono',monospace" font-size="7.5" fill="rgba(200,210,255,.55)" letter-spacing="1.5">ORION</text>
-
-      <!-- ══ LOWER-LEFT CONSTELLATION ══ -->
-      <g class="t3" filter="url(#starGlow)">
-        <circle cx="70"  cy="740" r="3.8" fill="rgba(255,220,180,.9)"/>
-      </g>
-      <g class="t1">
-        <circle cx="118" cy="695" r="2.4" fill="rgba(237,233,225,.7)"/>
-      </g>
-      <g class="t2" filter="url(#starGlow)">
-        <circle cx="155" cy="725" r="3.0" fill="rgba(200,210,255,.85)"/>
-      </g>
-      <g class="t4">
-        <circle cx="95"  cy="782" r="2.2" fill="rgba(237,233,225,.65)"/>
-      </g>
-      <g class="t1" filter="url(#starGlow)">
-        <circle cx="158" cy="795" r="2.8" fill="rgba(220,200,170,.8)"/>
-      </g>
-      <g class="const-line">
-        <line x1="70"  y1="740" x2="155" y2="725"/>
-        <line x1="118" y1="695" x2="95"  y2="782"/>
-        <line x1="155" y1="725" x2="158" y2="795"/>
-        <line x1="95"  y1="782" x2="158" y2="795"/>
-      </g>
-
-      <!-- ══ LOWER-RIGHT CONSTELLATION ══ -->
-      <g class="t5" filter="url(#starGlow)">
-        <circle cx="1280" cy="720" r="3.2" fill="rgba(255,210,160,.9)"/>
-      </g>
-      <g class="t2">
-        <circle cx="1325" cy="680" r="2.2" fill="rgba(237,233,225,.7)" filter="url(#starGlow)"/>
-      </g>
-      <g class="t3">
-        <circle cx="1360" cy="755" r="2.8" fill="rgba(200,210,255,.8)"/>
-      </g>
-      <g class="t4">
-        <circle cx="1310" cy="800" r="2.0" fill="rgba(237,233,225,.6)"/>
-      </g>
-      <g class="const-line">
-        <line x1="1280" y1="720" x2="1325" y2="680"/>
-        <line x1="1325" y1="680" x2="1360" y2="755"/>
-        <line x1="1280" y1="720" x2="1310" y2="800"/>
-      </g>
-      <text x="1268" y="670" font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(200,210,255,.45)" letter-spacing="1.3">LYRA</text>
-
-    </g><!-- /edgeMask -->
-
-    <!-- ══ SCATTERED FIELD STARS — perimeter only, avoid centre band ══ -->
-    <!-- Top strip -->
-    <g fill="rgba(237,233,225,.6)">
-      <circle cx="60"   cy="55"  r="1.6" class="t2"/>
-      <circle cx="180"  cy="38"  r="1.9" class="t1"/>
-      <circle cx="320"  cy="28"  r="1.3" class="t3"/>
-      <circle cx="480"  cy="48"  r="1.5" class="t4"/>
-      <circle cx="640"  cy="22"  r="1.2"/>
-      <circle cx="810"  cy="35"  r="2.0" class="t5"/>
-      <circle cx="970"  cy="18"  r="1.4" class="t2"/>
-      <circle cx="1120" cy="42"  r="1.7" class="t1"/>
-      <circle cx="1290" cy="25"  r="1.3" class="t3"/>
-      <circle cx="1370" cy="60"  r="1.8" class="t4"/>
-    </g>
-    <!-- Bottom strip -->
-    <g fill="rgba(237,233,225,.5)">
-      <circle cx="80"   cy="858" r="1.7" class="t3"/>
-      <circle cx="240"  cy="875" r="1.4" class="t1"/>
-      <circle cx="430"  cy="862" r="1.9" class="t2"/>
-      <circle cx="620"  cy="880" r="1.2"/>
-      <circle cx="790"  cy="855" r="1.6" class="t5"/>
-      <circle cx="980"  cy="870" r="1.4" class="t4"/>
-      <circle cx="1140" cy="858" r="1.8" class="t2"/>
-      <circle cx="1330" cy="843" r="1.3" class="t1"/>
-    </g>
-    <!-- Left strip -->
-    <g fill="rgba(237,233,225,.55)">
-      <circle cx="28"  cy="130" r="1.5" class="t4"/>
-      <circle cx="42"  cy="220" r="1.8" class="t2"/>
-      <circle cx="18"  cy="340" r="1.3"/>
-      <circle cx="38"  cy="460" r="1.6" class="t1"/>
-      <circle cx="22"  cy="590" r="1.4" class="t3"/>
-      <circle cx="48"  cy="690" r="1.9" class="t5"/>
-    </g>
-    <!-- Right strip -->
-    <g fill="rgba(237,233,225,.5)">
-      <circle cx="1365" cy="140" r="1.6" class="t1"/>
-      <circle cx="1380" cy="260" r="1.3" class="t3"/>
-      <circle cx="1370" cy="380" r="1.8" class="t2"/>
-      <circle cx="1385" cy="500" r="1.4"/>
-      <circle cx="1372" cy="620" r="1.7" class="t5"/>
-      <circle cx="1360" cy="730" r="1.2" class="t4"/>
-    </g>
-
-    <!-- ══ ANNOTATION ANNOTATIONS — right & bottom edges ══ -->
-    <!-- Annotation leader from upper-right corner region -->
-    <g opacity=".6">
-      <line x1="1268" y1="310" x2="1320" y2="280" stroke="rgba(200,134,58,.4)" stroke-width=".7"/>
-      <text x="1325" y="278" font-family="'JetBrains Mono',monospace" font-size="8" fill="rgba(200,134,58,.65)" letter-spacing="1.4">HD 189733b</text>
-      <line x1="1325" y1="280" x2="1390" y2="280" stroke="rgba(200,134,58,.25)" stroke-width=".6"/>
-      <circle cx="1264" cy="314" r="2.8" fill="rgba(200,134,58,.7)" filter="url(#starGlow)"/>
-      <!-- Crosshair -->
-      <g stroke="rgba(200,134,58,.35)" stroke-width=".7" fill="none">
-        <circle cx="1264" cy="314" r="12"/>
-        <line x1="1264" y1="298" x2="1264" y2="291"/>
-        <line x1="1264" y1="330" x2="1264" y2="337"/>
-        <line x1="1248" y1="314" x2="1241" y2="314"/>
-        <line x1="1280" y1="314" x2="1287" y2="314"/>
-      </g>
-    </g>
-
-    <!-- Lower-left annotation -->
-    <g opacity=".55">
-      <circle cx="200" cy="820" r="2.2" fill="rgba(200,134,58,.6)" filter="url(#starGlow)"/>
-      <g stroke="rgba(200,134,58,.3)" stroke-width=".6" fill="none">
-        <circle cx="200" cy="820" r="9"/>
-        <line x1="200" y1="808" x2="200" y2="803"/>
-        <line x1="200" y1="832" x2="200" y2="837"/>
-        <line x1="188" y1="820" x2="183" y2="820"/>
-        <line x1="212" y1="820" x2="217" y2="820"/>
-      </g>
-      <line x1="211" y1="812" x2="250" y2="800" stroke="rgba(200,134,58,.35)" stroke-width=".6"/>
-      <text x="254" y="798" font-family="'JetBrains Mono',monospace" font-size="7.5" fill="rgba(200,134,58,.55)" letter-spacing="1.2">τ Ceti · G8V</text>
-    </g>
-
-    <!-- ══ RA/DEC LABEL ARC along right edge ══ -->
-    <text font-family="'JetBrains Mono',monospace" font-size="7.5" fill="rgba(200,134,58,.38)" letter-spacing="1.5">
-      <textPath href="#annotArcLR" startOffset="0%">RA 18h · · Dec −20° · · RA 19h · · Dec −40°</textPath>
-    </text>
-    <text font-family="'JetBrains Mono',monospace" font-size="7" fill="rgba(200,134,58,.28)" letter-spacing="1.4">
-      <textPath href="#annotArcUR" startOffset="5%">RA 05h · · Dec +22° · · RA 06h</textPath>
-    </text>
-
-  </svg>
-
-  <div class="hero-inner">
-
-    <!-- LEFT: text content -->
-    <div class="hero-left">
-      <p class="hero-kicker">Mumbai · India</p>
-      <h1 class="hero-name">Dhruv<br/><span class="italic">Singhvi</span></h1>
-      <p class="hero-desc">Hi! I'm Dhruv, and I'm someone who loves the thrill of chasing olympiad problems at 2 AM and trying to make sense of the universe. When I'm not doing any of those, I'm probably geeking out about aviation & railways, and how much I love good public transit!
-        I'm currently pursuing my A-Levels in Physics, Chemistry, Maths, and Further Maths.</p>
-    </div>
-
-    <!-- RIGHT: profile photo + links -->
-    <div class="hero-right">
-      <div class="hero-photo-wrap">
-        <!-- Replace src with your actual photo path, e.g. src="profile.jpg" -->
-        <div class="hero-photo-placeholder"><img src="IMG_20260602_002234_664.webp" alt=""></div>
-      </div>
-      <nav class="hero-photo-links" aria-label="Quick links">
-        <a href="https://www.linkedin.com/in/dhruv-singhvi/" target="_blank" rel="noopener">LinkedIn</a>
-        <a href="mailto:dhruvsinghvi09@gmail.com">Email</a>
-      </nav>
-    </div>
-
+<section class="hero">
+  <div class="pfp big"><img src="photos/me.jpg" alt="Illustration of me watching a plane fly over"></div>
+  <div class="me">
+    <p class="status mono">Mumbai, IN 🇮🇳 / 16 / A-Levels: Phys, Chem, Maths, Further Maths</p>
+    <h1>hi, i'm Dhruv.</h1>
+    <!-- TODO: your intro, however you'd say it -->
+    <p>i'm a high schooler who's interested in a tonne of things, chief of which are physics & astronomy: few feelings are better than the high of solving a fun olympiad problem. </p>
+    <!-- TODO: one line of interests, each linked to something you love about it. For example:
+         <p>i'm into <a href="LINK">the cosmic distance ladder</a>, <a href="LINK">airports</a>, <a href="LINK">the A350</a> and <a href="LINK">indian railways</a>.</p> -->
+    <p>less academically, i love aviation & railways, (public transit in general, really!) as well as some amateur photography (some of which you see on this website) with my Nothing Phone (2a).</p>
+    <p class="links mono"><a href="mailto:dhruvsinghvi09@gmail.com">Email</a><a href="https://www.linkedin.com/in/dhruv-singhvi/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.instagram.com/singhvi101/" target="_blank" rel="noopener">Instagram</a><span class="discord" title="Discord username">Discord: @singhvi101</span></p>
+    <p class="status mono">Life's motto: Go on Sidequests & Maximise Whimsy.</p>
   </div>
 </section>
+<section class="sec done">
+  <div class="main">
+    <h2 id="done">achievements & such</h2>
+  <div class="done-cols">
+    <div class="table-wrap"><table>
+    <tbody>
+      <tr class="group"><td colspan="3">olympiads</td></tr>
+      <tr><td>2026</td><td><a href="https://olympiads.hbcse.tifr.res.in/" target="_blank" rel="noopener">IOAA</a> Team India selection camp @HBCSE</td><td>Rank 7 India; one of 50 invited, of 19,284</td></tr>
+      <tr><td>2026</td><td><a href="https://olympiads.hbcse.tifr.res.in/" target="_blank" rel="noopener">IPhO</a> Team India selection camp</td><td>One of 40 invited, of 66,515; chose the IOAA camp instead</td></tr>
+      <tr><td>2026</td><td><a href="https://iaac.space/" target="_blank" rel="noopener">IAAC</a></td><td>Rank 2 India; Gold Honour, top 1% worldwide</td></tr>
+      <tr><td>2025</td><td><a href="https://www.learnwithleaders.com/competitions/harvard-undergraduate-science-olympiad-india/" target="_blank" rel="noopener">HUSO India</a></td><td>Rank 1; full scholarship to HMCSF at Harvard</td></tr>
+      <tr><td>2024</td><td><a href="https://olympiads.hbcse.tifr.res.in/" target="_blank" rel="noopener">IJSO</a> Team India selection camp @<a href="https://iisc.ac.in/" target="_blank" rel="noopener">IISc</a></td><td>One of 36 invited, of 32,629</td></tr>
 
-<!-- OLYMPIADS -->
-<section id="olympiads">
-  <div class="si">
-    <p class="eyebrow r">Scientific Excellence in Olympiads & More</p>
+      <tr class="group"><td colspan="3">misc. science</td></tr>
+      <tr><td>2024</td><td><a href="https://www.nyas.org/learning/high-school-research-programs/the-junior-academy/" target="_blank" rel="noopener">NYAS Junior Academy</a></td><td>E-waste project, 5-country team</td></tr>
 
-    <div class="oly-layout r">
+      <tr class="group"><td colspan="3">effective altruism</td></tr>
+      <tr><td>2026–</td><td>Peer research advisor, <a href="https://www.non-trivial.org/" target="_blank" rel="noopener">Non-Trivial</a></td><td>Mentoring the 2026 cohort</td></tr>
+      <tr><td>2026</td><td>Mathematics of Morality, <a href="https://leaf.courses/" target="_blank" rel="noopener">Leaf</a></td><td>Finalist</td></tr>
+      <tr><td>2025</td><td>Non-Trivial <a href="https://www.non-trivial.org/programs/research-fellows" target="_blank" rel="noopener">Fellowship</a></td><td>150 of 7,000+; report on Mumbai transit and air pollution</td></tr>
+    </tbody></table></div>
+    <div class="table-wrap"><table>
+    <tbody>
+      <tr class="group"><td colspan="3">tests (self-studied)</td></tr>
+      <tr><td>SAT</td><td>1580</td><td>800 Math, 780 EBRW</td></tr>
+      <tr><td>AP</td><td>5</td><td>Physics C Mech</td></tr>
+      <tr><td>AP</td><td>5</td><td>Physics C E&M</td></tr>
+      <tr><td>AP</td><td>5</td><td>Calculus BC</td></tr>
+      <tr><td>AP</td><td>5</td><td>Chemistry</td></tr>
+      <tr><td>AP</td><td>5</td><td>CSP</td></tr>
 
-      <div class="oly-cell">
-        <div class="oly-line"></div>
-        <span class="oly-idx">01</span>
-        <p class="oly-year">IOAA / INPhO · 2026</p>
-        <h3 class="oly-name">Astronomy & Astrophysics OCSC</h3>
-        <p class="oly-stat">Selected among top 50 of 19,284 (0.26%) for the <a href="https://olympiads.hbcse.tifr.res.in/" class="lnk" target="_blank" rel="noopener">IOAA Orientation-cum-Selection Camp</a> (for Team India @IOAA) at HBCSE. <strong style="color:var(--cream)">Ranked 7th nationally.</strong><br/><br/>Simultaneously selected for the equivalent IPhO (Physics) OCSC - top 40 of 66,515 (0.06%).</p>
-        <span class="oly-badge">Rank 7 · IOAA OCSC</span>
+      <tr class="group"><td colspan="3">school, NES International Mumbai</td></tr>
+      <tr><td>AS</td><td>A, A, A</td><td>Physics, Maths, Chemistry</td></tr>
+      <tr><td>IB MYP 5</td><td colspan="2">42/42 (Term 1), 41/42 (Term 2)</td></tr>
+      <tr><td>2023</td><td>TEDx talk: <a href="https://www.youtube.com/watch?v=baIPzr7rP1Y" target="_blank" rel="noopener">Connections in the New Era</a></td><td>Co-organised in '23 and '24</td></tr>
+      <tr><td>—</td><td>Tabla, <a href="https://abgmvm.org/" target="_blank" rel="noopener">ABGMVM</a></td><td>Praveshika, first division</td></tr>
+      <tr><td>misc.</td><td colspan="2">CS Club founder, prefect, MUN Best Delegate and chair, emcee</td></tr>
+
+      <tr class="group"><td colspan="3">misc. camps</td></tr>
+      <tr><td>2025</td><td>HMCSF, Harvard</td><td>Fully funded</td></tr>
+      <tr><td>2024</td><td><a href="https://www.goethe.de/ins/lk/en/index.html" target="_blank" rel="noopener">Goethe-Institut</a> youth camp, Sri Lanka</td><td>Won the camp challenge (play in German)</td></tr>
+    </tbody></table></div>
+  </div>
+  </div>
+  <aside class="rail r">
+      <figure class="cluster feature span" style="--o:3"><div class="grid"><button data-full="photos/iisc-plants-r.jpg"><img src="photos/iisc-plants-r-sm.jpg" alt="photo" loading="lazy"></button><button data-full="photos/ijso-group-r.jpg"><img src="photos/ijso-group-r-sm.jpg" alt="photo" loading="lazy"></button><button data-full="photos/iisc-building-r.jpg"><img src="photos/iisc-building-r-sm.jpg" alt="photo" loading="lazy"></button></div><figcaption><span class="place"><a href="https://www.iisc.ac.in/challakere-campus/" target="_blank" rel="noopener">IISc TDC</a> during the IJSO OCSC: truly gorgeous. Meet the flora & fauna, the excellent team of professors and staff, and the general beauty of the isolated HAL-IISc Campus. </span></figcaption></figure>
+      <figure class="cluster trio span" style="--o:4"><div class="grid"><button data-full="photos/hbcse-trees-r.jpg"><img src="photos/hbcse-trees-r-sm.jpg" alt="photo" loading="lazy"></button><button data-full="photos/hbcse-building-r.jpg"><img src="photos/hbcse-building-r-sm.jpg" alt="photo" loading="lazy"></button><button data-full="photos/hbcse-courtyard-r.jpg"><img src="photos/hbcse-courtyard-r-sm.jpg" alt="photo" loading="lazy"></button></div><figcaption><span class="place"><a href="https://www.hbcse.tifr.res.in/" target="_blank" rel="noopener">HBCSE</a> treated us well during IOAA OCSC. I did not know such tranquility could exist in the middle of Bombay. It felt like we were in an academic bubble, isolated from the rest of the city.</span></figcaption></figure>
+      <div class="pair" style="--o:6">
+        <figure class="solo"><button data-full="photos/hmcsf-harvard-r.jpg"><img src="photos/hmcsf-harvard-r-sm.jpg" alt="photo" loading="lazy"></button><figcaption><span class="place">Touring the Harvard & MIT Campuses during the HMCSF Camp. Pictured: Zimmer Hall</span></figcaption></figure>
+        <figure class="cluster stack"><div class="grid"><button data-full="photos/skyline-rocks-r.jpg"><img src="photos/skyline-rocks-r-sm.jpg" alt="photo" loading="lazy"></button><button data-full="photos/pilotis-r.jpg"><img src="photos/pilotis-r-sm.jpg" alt="photo" loading="lazy"></button></div><figcaption><span class="place">A clean beach with the Mumbai Skyline in this economy? Exploring <a href="https://www.tifr.res.in/" target="_blank" rel="noopener">TIFR</a> was crazy.</span></figcaption></figure>
       </div>
+  </aside>
+</section>
+<section class="sec ">
+  <aside class="rail l">
+      <figure class="cluster big" style="--o:11;--mcols:2;--cols:2"><div class="grid"><button class="wide" data-full="photos/wing-night.jpg" data-cap="Etihad 787, over Europe"><img src="photos/wing-night-sm.jpg" alt="Etihad 787, over Europe" loading="lazy"></button><button data-full="photos/wing-sunset-2026.jpg"><img src="photos/wing-sunset-2026-sm.jpg" alt="photo" loading="lazy"></button><button data-full="photos/wing-clouds-2024.jpg"><img src="photos/wing-clouds-2024-sm.jpg" alt="photo" loading="lazy"></button></div><figcaption><!-- TODO --><span class="place">I will never get people who close their windows in-flight. Pictured: an Etihad 787 Dreamliner somewhere over Europe, an Air India A320neo flying out of Mumbai, and a Vistara A320neo somewhere over the Western Ghats.</span></figcaption></figure>
+      <figure class="cluster big" style="--o:6;--mcols:2;--cols:2"><div class="grid"><button data-full="photos/csmia-pillars.jpg"><img src="photos/csmia-pillars-sm.jpg" alt="photo" loading="lazy"></button><button data-full="photos/csmia-escalator.jpg"><img src="photos/csmia-escalator-sm.jpg" alt="photo" loading="lazy"></button></div><figcaption><span class="place">No feeling compares to the homeliness that the stunning architecture of CSMIA makes me feel.</span></figcaption></figure>
+      <figure class="cluster" style="--o:12;--mcols:2;--cols:2"><div class="grid"><button data-full="photos/wing-ground.jpg"><img src="photos/wing-ground-sm.jpg" alt="photo" loading="lazy"></button><button data-full="photos/airport-window.jpg"><img src="photos/airport-window-sm.jpg" alt="photo" loading="lazy"></button></div><figcaption><!-- TODO --><span class="place">Not technically impressive but cool photos regardless: The last standing Air India 747, VT-ESO (Khajuraho, now broken up) photographed from on-board their newest next-gen A350. The Queen meets the girl with the eyeliner? Also, an Air India tail captured from a Vistara jet, days before the airlines merged forever.</span></figcaption></figure>
+      <figure class="big" style="--o:8"><button data-full="photos/train-window.jpg"><img src="photos/train-window-sm.jpg" alt="photo" loading="lazy"></button><figcaption><!-- TODO --><span class="place">People are seriously sleeping on the glory of public transit.</span></figcaption></figure>
+      <figure class="cluster big" style="--o:13;--mcols:2;--cols:2"><div class="grid"><button class="wide short" data-full="photos/udaipur-lake-fountain.jpg"><img src="photos/udaipur-lake-fountain-sm.jpg" alt="photo" loading="lazy"></button><button data-full="photos/udaipur-boat.jpg"><img src="photos/udaipur-boat-sm.jpg" alt="photo" loading="lazy"></button><button data-full="photos/udaipur-gazebo.jpg"><img src="photos/udaipur-gazebo-sm.jpg" alt="photo" loading="lazy"></button></div><figcaption><span class="place">Fateh Sagar, Udaipur. Top: <a href="https://www.prl.res.in/~uso/" target="_blank" rel="noopener">Udaipur Solar Observatory</a> & a rainbow created by a fountain splitting the very sunlight USO observes.</span></figcaption></figure>
+  </aside>
+  <div class="main">
+    <div class="part part-now" style="--o:1">
+    <h2 id="now">right now</h2>
+    <dl class="now">
+      <dt class="mono">reading</dt>
+      <dd>
+        <p><b><a href="https://books.google.com/books?id=2o2JfTDiA40C" target="_blank" rel="noopener">QED: The Strange Theory of Light & Matter</a></b><br><span class="mono muted">Richard Feynman</span></p>
+        <!-- TODO --><p>Even for a book by Richard Feynman, I did <b>NOT</b> expect such a small book to change my perspective on physics as a whole. The physics we learn in high school and even the olympiad level seems to try to explain increasingly complex phenomena using basic principles: but this book did the opposite, and the idea of Feynman not being able to further explain why something is the way it is, because nature simply <i>is that way</i> forced me to face not being able to ask the question of 'why' which is always encouraged everywhere else I encounter physics. </p>
+        <p class="muted before">Before that: <b><a href="https://books.google.com/books/about/The_Song_of_Achilles.html?id=opC3d3ltQ94C" target="_blank" rel="noopener">The Song of Achilles</a></b>, Madeline Miller</p>
+      </dd>
+      <dt class="mono">on repeat</dt>
+      <dd>
+        <ul class="rows">
+          <li><span>About You</span><span class="mono muted">The 1975</span></li>
+          <li><span>I'll Believe in Anything</span><span class="mono muted">Wolf Parade</span></li>
+          <li><span>Taare</span><span class="mono muted">Farak, 10A, Saswat Balan</span></li>
+          <li><span>Arz Kiya Hai</span><span class="mono muted">Anuv Jain</span></li>
+          <li><span>Charlie Brown</span><span class="mono muted">Coldplay</span></li>
+          <li><span>Kuch Toh Hai Yahaan</span><span class="mono muted">Outstation</span></li>
+        </ul>
+      </dd>
+    </dl>
+    </div>
 
-      <div class="oly-cell">
-        <div class="oly-line"></div>
-        <span class="oly-idx">02</span>
-        <p class="oly-year">HUSO India · 2025</p>
-        <h3 class="oly-name"><a href="https://www.learnwithleaders.com/competitions/harvard-undergraduate-science-olympiad-india/" class="lnk-name" target="_blank" rel="noopener">Harvard Undergraduate Science Olympiad India</a></h3>
-        <p class="oly-stat">Selected amongst top 50 nationally to attend camp at GD Goenka University, run by Harvard–MIT students. <strong style="color:var(--cream)">Overall Rank 1.</strong> Secured Gold in Physics, Chemistry, Biology & Maths; Silver in Earth Science. Awarded $200 scholarship + 100% scholarship to HMCSF Summer Camp@Harvard.</p>
-        <span class="oly-badge">Rank 1</span>
-      </div>
+    <div class="part sp" style="--o:3">
+    <h2 id="thoughts">recent musings & thoughts</h2>
+    <!-- TODO: two or three paragraphs of things you've been thinking about lately. One <p> per paragraph. -->
+    <!-- TODO --><p><b>#1</b> The time is approaching when I'm doing many 'lasts' before I move out for college. I've been reflecting on the city lately, and how the culture of Mumbai has shaped me. Just wrapped up my last <a href="https://en.wikipedia.org/wiki/Ganesh_Chaturthi" target="_blank" rel="noopener">Ganesh Chaturthi</a> at home, and even as an atheist, it's a fact that the festival isn't the same anywhere else in the whole world. I've also been thinking about what the 'spirit' of the city really is, with its flashy, gorgeous airport architecture juxtaposed with Asia's largest slum: can we even name something that unifies all Mumbaikars as one?</p>
+    </div>
+    <div class="part" style="--o:9">
+    <!-- TODO --><p><b>#2</b> <a href="https://openai.com/index/navier-stokes-solution/" target="_blank" rel="noopener">OpenAI (allegedly) solving Navier–Stokes</a> has been weird. My older friends well into their BSc and MSc degrees have felt the atmosphere of doom & despair. I did too, considering I wanna do physics for life. Listening to Terry Tao's thoughts helped: I'm not doing physics primarily to help the world, I'm doing it because of the joy of understanding stuff. AI can't replicate the euphoria of solving what felt unsolvable. That's going to stay human. The aim was always to further <b>human</b> understanding.</p>
+    </div>
 
-      <div class="oly-cell">
-        <div class="oly-line"></div>
-        <span class="oly-idx">03</span>
-        <p class="oly-year">IJSO · 2024</p>
-        <h3 class="oly-name">Junior Science OCSC</h3>
-        <p class="oly-stat">Selected in <strong style="color:var(--cream)">36 of 32,629 (0.11%)</strong> through rigorous theoretical testing in Physics, Chemistry & Biology. Attending National OCSC (for Team India @IJSO) at the Indian Institute of Science's Talent Development Centre</p>
-        <span class="oly-badge">Top 0.11% · IISc camp</span>
-      </div>
+    <div class="part sp part-links" style="--o:10">
+    <h2 id="links">cool stuff from the internet i recommend checking out</h2>
+    <!-- TODO: things everyone should watch or read. One <li> each:
+         <li><a href="https://..." target="_blank" rel="noopener">Name of the thing</a><span class="muted">a few words on why</span></li> -->
+    <ul class="links-list">
+      <!-- TODO --><li><a href="https://youtu.be/3xSUwgg1L4g?si=vTw8K4jwiY4cU7I3" target="_blank" rel="noopener">The $21,000,000,000 hole in Texas</a><span class="muted">A masterpiece 3-hour documentary on YouTube documenting the story of the non-existent <a href="https://en.wikipedia.org/wiki/Superconducting_Super_Collider" target="_blank" rel="noopener">Superconducting Super Collider</a>. An account of a bit of science and a lot of politics under the Reagan, Bush Sr., and Clinton administrations.</span></li>
+      <!-- TODO --><li>XKCDs <a href="https://xkcd.com/3263/" target="_blank" rel="noopener">#3263,</a> <a href="https://xkcd.com/2678/" target="_blank" rel="noopener">#2678,</a> <a href="https://xkcd.com/3261/" target="_blank" rel="noopener">#3261,</a> <a href="https://xkcd.com/1020/" target="_blank" rel="noopener">#1020,</a> <a href="https://xkcd.com/1132/" target="_blank" rel="noopener">#1132,</a> <a href="https://xkcd.com/2707/" target="_blank" rel="noopener">#2707</a></li>
+      <!-- TODO --><li><a href="https://youtu.be/6dTyOl1fmDo?si=Lp2ormX-v9GAl9r6" target="_blank" rel="noopener">Why colliding blocks compute pi</a><span class="muted">Classic <a href="https://www.3blue1brown.com/" target="_blank" rel="noopener">3Blue1Brown</a> video on the most unexpected answer to a puzzle I've ever seen. Easy to follow, and helped me massively on <a href="https://olympiads.hbcse.tifr.res.in/wp-content/uploads/2026/02/INAO2026-Question-en.pdf" target="_blank" rel="noopener">INAO 2026 Q3</a> ;)</span></li>
+      <!-- TODO --><li><a href="https://youtu.be/9xCaalQeAbY?si=4x8d0f7y_4Jd5GIX" target="_blank" rel="noopener">Global Warming: The Century We Saved Earth</a><span class="muted">A gripping tale of speculative fiction narrated in the style of <a href="https://www.youtube.com/@BobbyBroccoli" target="_blank" rel="noopener">BobbyBroccoli</a> presenting a 21st century where we achieve net zero and limit the temperature anomaly to 1.8°C. Somehow the most optimistic version of the future, and still completely horrifying.</span></li>
+    </ul>
+    </div>
 
-      <div class="oly-cell">
-        <div class="oly-line"></div>
-        <span class="oly-idx">04</span>
-        <p class="oly-year">IAAC · 2026</p>
-        <h3 class="oly-name"><a href="https://iaac.space/" class="lnk-name" target="_blank" rel="noopener">International Astronomy & Astrophysics Competition</a></h3>
-        <p class="oly-stat">Received a National Award for ranking <strong style="color:var(--cream)">2nd in India</strong>, and a <strong style="color:var(--cream)">Gold Honour</strong> for placing among the top 1% of participants worldwide.</p>
-        <span class="oly-badge">Rank 2 India · Gold Honour</span>
-      </div>
-
-      <div class="oly-cell">
-        <div class="oly-line"></div>
-        <span class="oly-idx">05</span>
-        <p class="oly-year">International Junior Honors Society · 2022–Present</p>
-        <h3 class="oly-name"><a href="https://ijhscommunity.org/" class="lnk-name" target="_blank" rel="noopener">IJHS Lifetime Membership</a></h3>
-        <p class="oly-stat">Awarded Lifetime Membership by the <a href="https://simcc.org/" class="lnk" target="_blank" rel="noopener">Singapore International Maths Contests Centre (SIMCC)</a> for <strong style="color:var(--cream)">three consecutive years</strong> of excellent performance across a suite of STEM Olympiads.</p>
-        <span class="oly-badge">Lifetime Member</span>
-      </div>
-
-      <div class="oly-cell">
-        <div class="oly-line"></div>
-        <span class="oly-idx">06</span>
-        <p class="oly-year">NYAS Junior Academy · 2024</p>
-        <h3 class="oly-name">Junior Academy Membership</h3>
-        <p class="oly-stat">Awarded membership in the <strong style="color:var(--cream)"><a href="https://www.nyas.org/learning/high-school-research-programs/the-junior-academy/" class="lnk" target="_blank" rel="noopener">New York Academy of Sciences'</a></strong> Junior Academy, working on an E-Waste Management project with a team of students from 5 different countries.</p>
-        <span class="oly-badge">NYAS · Junior Academy</span>
-      </div>
-
+    <div class="part sp" style="--o:14">
+    <h2>say hi!</h2>
+    <!-- TODO --><p>please have a very low bar for reaching out! yapping with interesting strangers is an unreasonably effective way to maximise whimsy & sidequest (the stated goal of life). that is how i managed to talk my way into <a href="https://www.tifr.res.in/" target="_blank" rel="noopener">TIFR</a>, after all.</p>
+    <p class="links mono"><a href="mailto:dhruvsinghvi09@gmail.com">dhruvsinghvi09@gmail.com</a><a href="https://www.linkedin.com/in/dhruv-singhvi/" target="_blank" rel="noopener">LinkedIn</a><a href="https://www.instagram.com/singhvi101/" target="_blank" rel="noopener">Instagram</a><span class="discord" title="Discord username">Discord: @singhvi101</span></p>
     </div>
   </div>
+  <aside class="rail r">
+      <figure class="cluster big" style="--o:5;--mcols:2;--cols:2"><div class="grid"><button class="wide" data-full="photos/tricolour-bse.jpg"><img src="photos/tricolour-bse-sm.jpg" alt="photo" loading="lazy"></button><button data-full="photos/tricolour-bmc.jpg"><img src="photos/tricolour-bmc-sm.jpg" alt="photo" loading="lazy"></button><button data-full="photos/tricolour-streaks.jpg"><img src="photos/tricolour-streaks-sm.jpg" alt="photo" loading="lazy"></button></div><figcaption><span class="place">Mumbai, lit up for Independence Day. Isn't BSE beautiful?</span></figcaption></figure>
+      <figure class="cluster big" style="--o:4;--mcols:3;--cols:3"><div class="grid"><button class="wide" data-full="photos/ganpati-2026.jpg"><img src="photos/ganpati-2026-sm.jpg" alt="photo" loading="lazy"></button><button data-full="photos/ganpati-blue.jpg"><img src="photos/ganpati-blue-sm.jpg" alt="photo" loading="lazy"></button><button data-full="photos/ganpati-2024.jpg"><img src="photos/ganpati-2024-sm.jpg" alt="photo" loading="lazy"></button><button data-full="photos/ganpati-musician.jpg"><img src="photos/ganpati-musician-sm.jpg" alt="photo" loading="lazy"></button></div><figcaption><span class="place">I don't know why I feel drawn to this festival despite not believing in a god. Pictured: Mumbaicha Raja & Parelcha Raja 2024 & 2026</span></figcaption></figure>
+      <figure class="big tall crop" style="--o:7"><button data-full="photos/cat-stairs.jpg" data-cap="Mumbai"><img src="photos/cat-stairs-sm.jpg" alt="A white cat on stairs, Mumbai" loading="lazy"></button><figcaption><span class="place">Mumbai is a cat city. Chief Feline Officer, spotted at FEVICOL Marol Naka (iykyk)</span></figcaption></figure>
+      <figure class="cluster big" style="--o:2;--mcols:2;--cols:2"><div class="grid"><button class="wide" data-full="photos/milky-way.jpg"><img src="photos/milky-way-sm.jpg" alt="photo" loading="lazy"></button><button data-full="photos/bhandardara-road.jpg"><img src="photos/bhandardara-road-sm.jpg" alt="photo" loading="lazy"></button><button data-full="photos/stargazing-camp.jpg"><img src="photos/stargazing-camp-sm.jpg" alt="photo" loading="lazy"></button></div><figcaption><span class="place">Stargazing locked me into astronomy by taking me to the middle of nowhere and creating a bubble with just me, a friend, and the heavens.</span></figcaption></figure>
+  </aside>
 </section>
 
-<!-- CAMPS -->
-<section id="camps">
-  <div class="si">
-    <p class="eyebrow r">Camps & Programmes</p>
-    <h2 class="sh r">Camps I've <em>enjoyed.</em></h2>
-    <p class="camps-scroll-hint r">← scroll →</p>
-    <div class="camps-strip r">
-
-      <div class="camp-card">
-        <div class="camp-photo"><img src="astro ocsc.jpg" alt=""></div>
-        <div class="camp-body">
-          <p class="camp-year">IOAA OCSC · April 2026</p>
-          <h4 class="camp-name">Astronomy Camp at <a href="https://olympiads.hbcse.tifr.res.in/" class="lnk-name" target="_blank" rel="noopener">HBCSE</a></h4>
-          <p class="camp-desc">Enjoyed advanced lectures by professors from IITs, IUCAA, and TIFR-HBCE, faced extremely challenging examinations in Theory & Data Analysis, gained hands-on experience with telescope handling, and made amazing friends from across India.</p>
-        </div>
-      </div>
-
-      <div class="camp-card">
-        <div class="camp-photo"><img src="ijso ocsc.jpg" alt=""></div>
-        <div class="camp-body">
-          <p class="camp-year">IJSO OCSC · May 2024</p>
-          <h4 class="camp-name">Junior Science Camp at IISc</h4>
-          <p class="camp-desc">Exposed to advanced theoretical lectures by professors & performed scientific labwork in research-grade laboratories. Got to interact with the best & brightest students pan-India & write intense theory and practical exams. 
-            </p>
-        </div>
-      </div>
-
-      <div class="camp-card">
-        <div class="camp-photo"><img src="goethe.jpg" alt=""></div>
-        <div class="camp-body">
-          <p class="camp-year">Goethe Institut · Sep 2024</p>
-          <h4 class="camp-name">Regional Youth Camp in Sri Lanka</h4>
-          <p class="camp-desc">A cultural camp in Sri Lanka for South Asian German learners - won first place at the camp challenge, writing & performing a play in German with students from India, Pakistan, Nepal, Sri Lanka, and Bangladesh.
-          </p>
-        </div>
-      </div>
-
-      <div class="camp-card">
-        <div class="camp-photo"><img src="huso india.jpg" alt=""></div>
-        <div class="camp-body">
-          <p class="camp-year">HUSO India · Jan 2025</p>
-          <h4 class="camp-name"><a href="https://www.learnwithleaders.com/competitions/harvard-undergraduate-science-olympiad-india/" class="lnk-name" target="_blank" rel="noopener">HUSO India</a> National Camp</h4>
-          <p class="camp-desc">Enjoyed a Science Camp at GD Goenka University run by past-olympiad medallists / national campers in their countries. Participated in hands-on activities and theory exams with olympiad-grade questions. Ranked 1st.</p>
-        </div>
-      </div>
-
-      <div class="camp-card">
-        <div class="camp-photo"><img src="hmcsf.jpg" alt=""></div>
-        <div class="camp-body">
-          <p class="camp-year">Harvard Model Congress · Jul 2025</p>
-          <h4 class="camp-name">HMCSF Summer Camp</h4>
-          <p class="camp-desc">A fully-funded week @Harvard University with students from around the world, led by students/recent graduates from Harvard. Enjoyed working on AI-themed group projects & exploring the Harvard and MIT campuses.</p>
-        </div>
-      </div>
-
+<section class="misc">
+  <h2 id="clicks">enjoy some more miscellaneous clicks &lt;3</h2>
+  <div class="misc-cols">
+    <div class="col">
+        <figure class="cluster big" style="--mcols:2;--cols:2"><div class="grid"><button class="wide" data-full="photos/lakshmi-mandir.jpg"><img src="photos/lakshmi-mandir-sm.jpg" alt="photo" loading="lazy"></button><button data-full="photos/diwali-lights.jpg"><img src="photos/diwali-lights-sm.jpg" alt="photo" loading="lazy"></button><button data-full="photos/diwali-star.jpg"><img src="photos/diwali-star-sm.jpg" alt="photo" loading="lazy"></button></div><figcaption><span class="place">Diwali at Udaipur. Festival of lights for a reason.</span></figcaption></figure>
+        <figure class="cluster" style="--mcols:3;--cols:3"><div class="grid"><button data-full="photos/udaipur-temple.jpg"><img src="photos/udaipur-temple-sm.jpg" alt="photo" loading="lazy"></button><button data-full="photos/udaipur-hilltop.jpg"><img src="photos/udaipur-hilltop-sm.jpg" alt="photo" loading="lazy"></button><button data-full="photos/udaipur-flower.jpg"><img src="photos/udaipur-flower-sm.jpg" alt="photo" loading="lazy"></button></div><figcaption><span class="place">Neemach Mata, Udaipur. A quiet, tiny temple atop a small hill features a view of the entire city.</span></figcaption></figure>
+    </div>
+    <div class="col">
+        <figure class="big"><button data-full="photos/spider-web.jpg"><img src="photos/spider-web-sm.jpg" alt="photo" loading="lazy"></button><figcaption><!-- TODO --><span class="place">Brand New Day, anybody? I was on a nature trail in Goa when BND dropped.</span></figcaption></figure>
+        <figure class="cluster big" style="--mcols:6;--cols:6"><div class="grid"><button class="half" data-full="photos/waterfall.jpg"><img src="photos/waterfall-sm.jpg" alt="photo" loading="lazy"></button><button class="half" data-full="photos/mist-path.jpg"><img src="photos/mist-path-sm.jpg" alt="photo" loading="lazy"></button><button class="third" data-full="photos/forest-road.jpg"><img src="photos/forest-road-sm.jpg" alt="photo" loading="lazy"></button><button class="third" data-full="photos/forest-stream.jpg"><img src="photos/forest-stream-sm.jpg" alt="photo" loading="lazy"></button><button class="third" data-full="photos/misty-valley.jpg"><img src="photos/misty-valley-sm.jpg" alt="photo" loading="lazy"></button></div><figcaption><!-- TODO --><span class="place">In trekking I find tranquility.</span></figcaption></figure>
+    </div>
+    <div class="col">
+        <figure class=""><button data-full="photos/gothic-building.jpg"><img src="photos/gothic-building-sm.jpg" alt="photo" loading="lazy"></button><figcaption><!-- TODO --><span class="place">Can I truly appreciate South Bombay's architecture if it's a remnant of a colonial past?</span></figcaption></figure>
+        <figure class="cluster feature sq"><div class="grid"><button data-full="photos/canopy.jpg"><img src="photos/canopy-sm.jpg" alt="photo" loading="lazy"></button><button data-full="photos/palace-night.jpg"><img src="photos/palace-night-sm.jpg" alt="photo" loading="lazy"></button><button data-full="photos/green-corridor.jpg"><img src="photos/green-corridor-sm.jpg" alt="photo" loading="lazy"></button></div><figcaption><!-- TODO --><span class="place">An island of peace in a hectic city. Jain Mandir, Mulund West, Mumbai.</span></figcaption></figure>
     </div>
   </div>
-</section>
-
-<!-- EA -->
-<section id="ea">
-  <div class="si">
-    <p class="eyebrow r">Effective Altruism</p>
-    <h2 class="sh r">Thinking rigorously<br/>about <em>what matters.</em></h2>
-    <p class="r" style="font-size:.9rem;color:var(--fog);font-weight:300;line-height:1.85;max-width:640px;margin-bottom:48px">
-      The Effective Altruism (EA) community's all about trying to figure out the best way to do the most good, and I've found it to be one of the most intellectually stimulating spaces I've come across.</p>
-    <div class="ea-cards r">
-
-      <div class="ea-card">
-        <div class="ea-card-accent"></div>
-        <p class="ea-tag">PARA</p>
-        <p class="ea-when">Jun 2026 – Present</p>
-        <h3 class="ea-role">Peer Assistant Research Advisor</h3>
-        <a href="https://www.non-trivial.org/" class="ea-org" target="_blank" rel="noopener">Non-Trivial ↗</a>
-        <p class="ea-desc">Selected among fellowship alumni to mentor the 2026 cohort: giving feedback on research proposals, assisting full-time facilitators, and answering questions from the other side of the process.</p>
-      </div>
-
-      <div class="ea-card">
-        <div class="ea-card-accent"></div>
-        <p class="ea-tag">Research Fellow</p>
-        <p class="ea-when">Mar – Jul 2025</p>
-        <h3 class="ea-role">Non-Trivial Fellowship</h3>
-        <a href="https://www.non-trivial.org/" class="ea-org" target="_blank" rel="noopener">Non-Trivial ↗</a>
-        <p class="ea-desc">Chosen from 150 of 600 finalists (7,000+ applicants) on proposal and interview. Wrote a research report on high-impact solutions to urban design, public transit, and air pollution in Mumbai. Engaged with like-minded peers from around the world </p>
-      </div>
-
-      <div class="ea-card">
-        <div class="ea-card-accent"></div>
-        <p class="ea-tag">Finalist</p>
-        <p class="ea-when">Jan – Feb 2026</p>
-        <h3 class="ea-role">Mathematics of Morality</h3>
-        <a href="https://leaf.courses/" class="ea-org" target="_blank" rel="noopener">Leaf Courses ↗</a>
-        <p class="ea-desc">Selected early for Leaf's winter cohort - exploring the mathematics of effective altruism (Bayesian probability, welfare functions, moral uncertainty, etc.) alongside an international peer group.</p>
-      </div>
-
+  <div class="finale">
+  <figure><button data-full="photos/cat-car-full.jpg"><img src="photos/cat-car-full-sm.jpg" alt="A black and white cat under a car" loading="lazy"></button></figure>
+    <div class="after">
+      <p class="sign-off">Vito Purrleone thanks you for reading to the end with this badass picture of herself.</p>
+      <h3 class="mono gloss-h">glossary</h3>
+      <dl class="gloss">
+        <div><dt><a href="https://www.bseindia.com/" target="_blank" rel="noopener">BSE</a></dt><dd>Bombay Stock Exchange</dd></div>
+        <div><dt><a href="https://www.csmia.adaniairports.com/" target="_blank" rel="noopener">CSMIA</a></dt><dd>Chhatrapati Shivaji Maharaj International Airport, Mumbai</dd></div>
+        <div><dt><a href="https://www.hbcse.tifr.res.in/" target="_blank" rel="noopener">HBCSE</a></dt><dd>Homi Bhabha Centre for Science Education, TIFR</dd></div>
+        <div><dt><a href="https://www.hmcsanfran.org/" target="_blank" rel="noopener">HMCSF</a></dt><dd>Harvard Model Congress San Francisco</dd></div>
+        <div><dt><a href="https://www.learnwithleaders.com/competitions/harvard-undergraduate-science-olympiad-india/" target="_blank" rel="noopener">HUSO</a></dt><dd>Harvard Undergraduate Science Olympiad</dd></div>
+        <div><dt><a href="https://iaac.space/" target="_blank" rel="noopener">IAAC</a></dt><dd>International Astronomy & Astrophysics Competition</dd></div>
+        <div><dt><a href="https://iisc.ac.in/" target="_blank" rel="noopener">IISc</a></dt><dd>Indian Institute of Science, Bengaluru</dd></div>
+        <div><dt><a href="https://olympiads.hbcse.tifr.res.in/" target="_blank" rel="noopener">IJSO</a></dt><dd>International Junior Science Olympiad</dd></div>
+        <div><dt><a href="https://olympiads.hbcse.tifr.res.in/" target="_blank" rel="noopener">INAO</a></dt><dd>Indian National Astronomy Olympiad</dd></div>
+        <div><dt><a href="https://olympiads.hbcse.tifr.res.in/" target="_blank" rel="noopener">IOAA</a></dt><dd>International Olympiad on Astronomy & Astrophysics</dd></div>
+        <div><dt><a href="https://olympiads.hbcse.tifr.res.in/" target="_blank" rel="noopener">IPhO</a></dt><dd>International Physics Olympiad</dd></div>
+        <div><dt><a href="https://www.nyas.org/" target="_blank" rel="noopener">NYAS</a></dt><dd>New York Academy of Sciences</dd></div>
+        <div><dt>OCSC</dt><dd>Orientation-cum-Selection Camp</dd></div>
+        <div><dt><a href="https://www.tifr.res.in/" target="_blank" rel="noopener">TIFR</a></dt><dd>Tata Institute of Fundamental Research</dd></div>
+        <div><dt><a href="https://www.prl.res.in/~uso/" target="_blank" rel="noopener">USO</a></dt><dd>Udaipur Solar Observatory</dd></div>
+      </dl>
     </div>
   </div>
+  <p class="updated mono muted">last updated 26 September 2026</p>
 </section>
 
-<!-- SCORES -->
-<section id="scores">
-  <div class="si">
-    <p class="eyebrow r">Standardised Tests</p>
-    <h2 class="sh r">Scores on Standardised Testing</h2>
-    <div class="scores-grid r">
-      <div class="score-cell">
-        <div class="score-n">1580<sup> /1600</sup></div>
-        <p class="score-label">Digital SAT</p>
-        <p class="score-note">Math 800 · EBRW 780</p>
-        <span class="self-tag">Self studied</span>
-      </div>
-      <div class="score-cell">
-        <div class="score-n">5</div>
-        <p class="score-label">AP Calculus BC</p>
-        <p class="score-note">AB Subscore: 5</p>
-        <span class="self-tag">Self studied</span>
-      </div>
-      <div class="score-cell">
-        <div class="score-n">5</div>
-        <p class="score-label">AP Physics C</p>
-        <p class="score-note">Mechanics</p>
-        <span class="self-tag">Self studied</span>
-      </div>
-      <div class="score-cell">
-        <div class="score-n">5</div>
-        <p class="score-label">AP Physics C</p>
-        <p class="score-note">Electricity &amp; Magnetism</p>
-        <span class="self-tag">Self studied</span>
-      </div>
-      <div class="score-cell">
-        <div class="score-n">5</div>
-        <p class="score-label">AP Chemistry</p>
-        <span class="self-tag">Self studied</span>
-      </div>
-      <div class="score-cell">
-        <div class="score-n">5</div>
-        <p class="score-label">AP CS Principles</p>
-        <p class="score-note">Computer Science</p>
-        <span class="self-tag">Self studied</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- SCHOOL -->
-<section id="school">
-  <div class="si">
-    <p class="eyebrow r">School</p>
-
-    <!-- Mega box -->
-    <div class="school-mega r">
-
-      <!-- Header -->
-      <div class="school-mega-header">
-        <div>
-          <div class="school-mega-title">NES International School Mumbai</div>
-          <div class="school-mega-meta" style="margin-top:6px">IB MYP &amp; A Levels · 2019–2027</div>
-        </div>
-        <div style="font-family:'Cormorant Garamond',serif;font-size:1rem;font-style:italic;color:var(--fog2)">Mumbai, India</div>
-      </div>
-
-      <!-- Academic scores row -->
-      <div class="school-scores">
-        <!-- A in A-Levels -->
-        <div class="sc-block">
-          <div class="sc-n" style="color:var(--amber2)">A</div>
-          <p class="sc-lbl">AS Level Exams</p>
-          <p style="font-family:'JetBrains Mono',monospace;font-size:.52rem;letter-spacing:.08em;text-transform:uppercase;color:var(--amber3);margin-top:4px;margin-bottom:8px">Grade A in all three</p>
-          <p class="sc-sub" style="margin-top:4px">Physics<br/>Chemistry<br/>Mathematics</p>
-        </div>
-
-        <!-- 42/42 and 41/42 unified -->
-        <div class="sc-block" style="flex:2">
-          <div style="display:flex;gap:32px;align-items:flex-start;flex-wrap:wrap">
-            <div>
-              <div class="sc-n">42<span style="font-size:1.2rem;color:var(--fog2)">/42</span></div>
-              <p class="sc-lbl" style="margin-top:8px">IB MYP Term 1</p>
-            </div>
-            <div style="margin-top:4px;padding-top:4px">
-              <div class="sc-n" style="font-size:1.8rem">41<span style="font-size:1rem;color:var(--fog2)">/42</span></div>
-              <p class="sc-lbl" style="margin-top:8px">IB MYP Term 2</p>
-            </div>
-          </div>
-          <p class="sc-sub" style="margin-top:10px;font-size:.76rem;line-height:1.7">Language &amp; Literature, Mathematics, Sciences, Individuals &amp; Societies, German, Design</p>
-        </div>
-
-        <!-- Current coursework -->
-        <div class="sc-block">
-          <p class="sc-lbl" style="margin-bottom:10px">Current Coursework</p>
-          <p style="font-family:'JetBrains Mono',monospace;font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);margin-bottom:6px">A Level</p>
-          <p style="font-size:.83rem;color:var(--cream);font-weight:400;line-height:1.85">Physics<br/>Chemistry<br/>Mathematics<br/>Further Mathematics</p>
-          <p style="font-family:'JetBrains Mono',monospace;font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;color:var(--fog2);margin-top:10px;margin-bottom:4px">AS Level</p>
-          <p style="font-size:.8rem;color:var(--fog);font-weight:300">English Language</p>
-        </div>
-      </div>
-
-      <div class="school-acts-header" style="padding-top:0;padding-bottom:0;min-height:0;border-top:none"></div>
-
-      <div class="school-acts-grid">
-
-        <!-- TEDx left panel -->
-        <div class="tedx-panel">
-          <div class="tedx-logo-row">
-            <img src="tedx-logo.png" alt="TEDx" class="tedx-logo">
-            <span class="tedx-logo-line"></span>
-            <span class="tedx-logo-tag"><span class="tedx-logo-dot"></span>Talk</span>
-          </div>
-          <a href="https://www.youtube.com/watch?v=baIPzr7rP1Y" class="tedx-thumb" target="_blank" rel="noopener">
-            <div class="tedx-thumb-placeholder"><img src="IMG_0998.jpeg"" alt=""></div>
-            <span class="tedx-watch-btn">Watch talk</span>
-          </a>
-          <div class="tedx-info">
-            <p class="tag2">TEDxNESIntlSchool · Sep 2023</p>
-            <h4>Connections in the New Era</h4>
-            <p>On the largely untapped positive potential of online communities, and why & how to harness it. Selected on merit for critical thinking and oratory skills. Also co-organised the event in '23 and '24.</p>
-          </div>
-        </div>
-
-        <!-- Activities right panel — list style -->
-        <div class="act-panel">
-          <p style="font-family:'JetBrains Mono',monospace;font-size:.54rem;letter-spacing:.14em;text-transform:uppercase;color:var(--fog2);margin-bottom:4px">Other activities</p>
-
-          <div class="act-list-item">
-            <div class="act-dot"></div>
-            <div>
-              <p class="act-list-title">Founder &amp; President, Computer Science Club</p>
-              <p class="act-list-desc">Founded and led the school's CS club, organising regular workshops for students to build and tinker.</p>
-            </div>
-          </div>
-
-          <div class="act-list-item">
-            <div class="act-dot"></div>
-            <div>
-              <p class="act-list-title">School Prefect · 2024–Present</p>
-              <p class="act-list-desc">Elected to be part of the student leadership body.</p>
-            </div>
-          </div>
-
-          <div class="act-list-item">
-            <div class="act-dot"></div>
-            <div>
-              <p class="act-list-title">MUN Best Delegate &amp; Chairperson</p>
-              <p class="act-list-desc">Best Delegate at NES Senior MUN 2024; served on the Secretariat & chaired UNGA at NES Junior MUN 2024.</p>
-            </div>
-          </div>
-
-          <div class="act-list-item">
-            <div class="act-dot"></div>
-            <div>
-              <p class="act-list-title">Tabla Player</p>
-              <p class="act-list-desc">Certified Praveshika by the Akhil Bharatiya Gandharva Mahavidyalaya with a First Division score; multiple solo performances.</p>
-            </div>
-          </div>
-
-          <div class="act-list-item">
-            <div class="act-dot"></div>
-            <div>
-              <p class="act-list-title">Primary Anchor</p>
-              <p class="act-list-desc">Emceed school events and ceremonies throughout MYP.</p>
-            </div>
-          </div>
-
-          <div class="act-list-item">
-            <div class="act-dot"></div>
-            <div>
-              <p class="act-list-title">Editor, School Newsletter</p>
-              <p class="act-list-desc">Edited and compiled articles for the school's newsletter across multiple years.</p>
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-    </div><!-- end mega box -->
-
-  </div>
-</section>
-
-<!-- PERSONAL -->
-<section id="personal">
-  <div class="si">
-    <p class="eyebrow r">Life</p>
-    <h2 class="sh r"><em>Amateur</em> Photography, Music & Reading<br/></h2>
-    <div class="life-stack">
-
-      <!-- Photography — responsive masonry grid with real images -->
-      <div class="r photography-section">
-        <p class="photo-row-label">Shot on Nothing Phone(2a)</p>
-        <div class="photo-grid">
-
-          <div class="pg-col">
-            <div class="photo-cell"><div class="photo-cell-inner"><img src="img01.jpg" alt=""></div></div>
-            <div class="photo-cell"><div class="photo-cell-inner"><img src="img02.jpg" alt=""></div></div>
-          </div>
-
-          <div class="pg-col">
-            <div class="photo-cell"><div class="photo-cell-inner"><img src="img04.jpg" alt=""></div></div>
-            <div class="photo-cell"><div class="photo-cell-inner"><img src="img03.jpg" alt=""></div></div>
-          </div>
-
-          <div class="pg-col">
-            <div class="photo-cell"><div class="photo-cell-inner"><img src="img07.jpg" alt=""></div></div>
-            <div class="photo-cell"><div class="photo-cell-inner"><img src="img09.jpg" alt=""></div></div>
-          </div>
-
-          <div class="pg-col">
-            <div class="photo-cell"><div class="photo-cell-inner"><img src="img11.jpg" alt=""></div></div>
-            <div class="photo-cell"><div class="photo-cell-inner"><img src="img12.jpg" alt=""></div></div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- Books + Music side by side -->
-      <div class="bm-grid r">
-
-        <!-- Music -->
-        <div>
-          <p class="photo-row-label">NOW PLAYING</p>
-          <div>
-            <div class="track"><span class="track-n">1</span><div class="track-info"><p class="track-title">Iris</p><p class="track-artist">Goo Goo Dolls</p></div><div class="playing-dot"></div></div>
-            <div class="track"><span class="track-n">2</span><div class="track-info"><p class="track-title">I'll Believe in Anything</p><p class="track-artist">Wolf Parade</p></div></div>
-            <div class="track"><span class="track-n">3</span><div class="track-info"><p class="track-title">Celestial</p><p class="track-artist">Ed Sheeran</p></div></div>
-            <div class="track"><span class="track-n">4</span><div class="track-info"><p class="track-title">Arz Kiya Hai</p><p class="track-artist">Anuv Jain</p></div></div>
-            <div class="track"><span class="track-n">4</span><div class="track-info"><p class="track-title">Charlie Brown</p><p class="track-artist">Coldplay</p></div></div>
-          </div>
-        </div>
-
-        <!-- Books -->
-        <div>
-          <p class="photo-row-label">Recent Reads</p>
-          <div>
-            <div class="book-item">
-              <div>
-                <p class="book-title">The Song of Achilles</p>
-                <p class="book-author">Madeline Miller</p>
-                <p class="book-thought">I found this retelling of the Iliad from the lens of Achilles & Patroclus' relationship very intimate, painful, and deeply feeling. The prose was beautifully written, it made me intrsopect about my understanding of right, wrong and virtue, and the tragedy left me broken in all the good ways.</p>
-              </div>
-            </div>
-            <div class="book-item">
-              <div>
-                <p class="book-title">Life of Pi</p>
-                <p class="book-author">Yann Martel</p>
-                <p class="book-thought">I loved the vivid writing, transported me to late-1900s Pondicherry (followed by the middle of the ocean). The story felt intensely trapping, and the Mic-Drop Reveal at the end was the best I've ever seen, it left me genuinely thinking hard about my own understanding of faith, religion, and reality. 
-                  </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- CONTACT -->
-<section id="contact">
-  <div class="contact-bg-text">Hello.</div>
-  <div class="contact-inner">
-    <h2 class="contact-h r">Say <em>hello.</em></h2>
-    <p class="contact-sub r">Whether it's about physics, EA, a collaboration, or just a good conversation.</p>
-    <div class="contact-btns r">
-      <a href="mailto:dhruvsinghvi09@gmail.com" class="cbtn fill">Send an email</a>
-      <a href="https://www.linkedin.com/in/dhruv-singhvi/" target="_blank" rel="noopener" class="cbtn">LinkedIn</a>
-    </div>
-  </div>
-</section>
-
-<footer>
-  <span>Dhruv Singhvi · Mumbai</span>
-  <span id="yr"></span>
-</footer>
+<dialog id="viewer">
+  <button class="x" type="button">close</button>
+  <img src="" alt="">
+  <p></p>
+</dialog>
 
 <script>
-/* STARFIELD */
-(()=>{
-  const c=document.getElementById('stars'),x=c.getContext('2d');
-  let S=[],W,H;
-  function resize(){
-    W=c.width=c.offsetWidth;H=c.height=c.offsetHeight;
-    S=[];const n=Math.min(Math.floor(W*H/1400),700);
-    for(let i=0;i<n;i++){
-      const bright=Math.random()<.04;
-      S.push({x:Math.random()*W,y:Math.random()*H,
-        r:bright?(Math.random()*.8+.5):(Math.random()*.5+.1),
-        a:bright?(Math.random()*.7+.25):(Math.random()*.35+.05),
-        sp:Math.random()*.005+.001,ph:Math.random()*Math.PI*2,bright})
-    }
-  }
-  let t=0;
-  function draw(){
-    x.clearRect(0,0,W,H);t+=.012;
-    const g=x.createRadialGradient(W*.45,H*.35,0,W*.45,H*.35,W*.5);
-    g.addColorStop(0,'rgba(200,134,58,.035)');g.addColorStop(.6,'rgba(120,80,30,.012)');g.addColorStop(1,'rgba(0,0,0,0)');
-    x.fillStyle=g;x.fillRect(0,0,W,H);
-    S.forEach(s=>{
-      const a=s.a*(0.4+0.6*Math.sin(t*s.sp*55+s.ph));
-      if(s.bright){
-        x.save();x.globalAlpha=a*.5;x.strokeStyle='rgba(237,233,225,.8)';x.lineWidth=.5;
-        x.beginPath();x.moveTo(s.x-s.r*3,s.y);x.lineTo(s.x+s.r*3,s.y);x.stroke();
-        x.beginPath();x.moveTo(s.x,s.y-s.r*3);x.lineTo(s.x,s.y+s.r*3);x.stroke();
-        x.restore();
-      }
-      x.beginPath();x.arc(s.x,s.y,s.r,0,Math.PI*2);
-      x.fillStyle=`rgba(237,233,225,${a})`;x.fill();
-    });
-    requestAnimationFrame(draw);
-  }
-  new ResizeObserver(resize).observe(c.parentElement);
-  resize();draw();
-})();
-
-/* NAV */
-const nav=document.getElementById('nav');
-window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>60),{passive:true});
-
-/* REVEAL */
-document.querySelectorAll('.r').forEach(el=>{
-  new IntersectionObserver(([e])=>{if(e.isIntersecting){el.classList.add('v');}},{threshold:.08}).observe(el);
-});
-
-/* CAMPS HORIZONTAL DRAG-SCROLL */
-(()=>{
-  const s=document.querySelector('.camps-strip');
-  if(!s)return;
-  let isDown=false,startX,scrollLeft;
-  s.addEventListener('mousedown',e=>{isDown=true;startX=e.pageX-s.offsetLeft;scrollLeft=s.scrollLeft;s.style.cursor='grabbing'});
-  s.addEventListener('mouseleave',()=>{isDown=false;s.style.cursor=''});
-  s.addEventListener('mouseup',()=>{isDown=false;s.style.cursor=''});
-  s.addEventListener('mousemove',e=>{if(!isDown)return;e.preventDefault();const x=e.pageX-s.offsetLeft;s.scrollLeft=scrollLeft-(x-startX)*1.2});
-})();
-
-/* FOOTER */
-document.getElementById('yr').textContent='© '+new Date().getFullYear();
+const v=document.getElementById('viewer');
+document.querySelectorAll('figure button').forEach(b=>b.addEventListener('click',()=>{
+  const img=b.querySelector('img'), place=b.closest('figure').querySelector('.place');
+  v.querySelector('img').src=b.dataset.full; v.querySelector('img').alt=img.alt;
+  v.querySelector('p').textContent=b.dataset.cap || (place && !place.classList.contains('todo') ? place.textContent : '');
+  v.showModal();
+}));
+v.querySelector('.x').onclick=()=>v.close();
+v.addEventListener('click',e=>{if(e.target===v)v.close()});
 </script>
 </body>
 </html>
